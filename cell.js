@@ -19,4 +19,8 @@ export class Cell {
         this._state = value;
         this.tag.setAttribute("class", value);
     }
+
+    get state() {
+        return this._state;
+    }
 }

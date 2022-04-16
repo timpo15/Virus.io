@@ -4,15 +4,15 @@ td {
 }
 
 .free_cell {
-
+    background: white;
 }
 
 .wall_cell {
-
+    background: gray;
 }
 
 .free_tower_cell {
-
+    background: black;
 }
 
 .p1_cell {

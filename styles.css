@@ -24,9 +24,9 @@ td {
 }
 
 .p1_tower_cell {
-
+    background: darkblue;
 }
 
 .p2_tower_cell {
-
+    background: darkgoldenrod;
 }

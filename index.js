@@ -1,8 +1,9 @@
 import {Cell, cell_types} from "./cell.js";
+import {direction, Player} from "./player.js";
 
-const field_height = 10;
-const field_width = 10;
-const random_tick_speed = 5;
+const field_height = 15;
+const field_width = 15;
+const random_tick_speed = 1;
 const tps = 20;
 const point_tick_speed = 20;
 
@@ -86,9 +87,11 @@ function generate_landscape_on_rectangle(cells, i_min, j_min, i_max, j_max) {
     }
 }
 
-function generate_map(cells) {
-    add_object(cells, 4, 4, 4, 4, cell_types.P1);
-    add_object(cells, cells.length - 5, cells[0].length - 5, cells.length - 5, cells[0].length - 5, cell_types.P2);
+function generate_map(cells, players) {
+    let positions = [[4, 4], [cells.length - 5, cells[0].length - 5], [4, cells[0].length - 5], [cells.length - 5, 4]];
+    for (let i = 0; i < players.length; i++) {
+        add_object(cells, positions[i][0], positions[i][1], positions[i][0], positions[i][1], players[i].tower_style);
+    }
     for (let i = 0; (i + 1) * 20 <= cells.length; i++) {
         for (let j = 0; (j + 1) * 20 <= cells[0].length; j++) {
             generate_landscape_on_rectangle(cells,
@@ -96,14 +99,11 @@ function generate_map(cells) {
                 j * 10,
                 i * 10 + 9,
                 j * 10 + 9);
-
             generate_landscape_on_rectangle(cells,
                 cells.length - (i + 1) * 10,
                 j * 10,
                 cells.length - (i + 1) * 10 + 9,
                 j * 10 + 9);
-
-
             generate_landscape_on_rectangle(cells,
                 i * 10,
                 cells[0].length - (j + 1) * 10,
@@ -118,7 +118,7 @@ function generate_map(cells) {
     }
 
     let i_shift = Math.trunc(cells.length / 20) * 10;
-    let j_shft = Math.trunc(cells[0].length / 20) * 10;
+    let j_shift = Math.trunc(cells[0].length / 20) * 10;
 
     if (cells.length % 20 !== 0) {
         for (let j = 0; (j + 1) * 20 < cells[0].length; j++) {
@@ -127,7 +127,6 @@ function generate_map(cells) {
                 j * 10,
                 i_shift + cells.length % 20 - 1,
                 j * 10 + 9);
-
             generate_landscape_on_rectangle(cells,
                 i_shift,
                 cells[0].length - (j + 1) * 10,
@@ -140,38 +139,112 @@ function generate_map(cells) {
         for (let i = 0; (i + 1) * 20 < cells.length; i++) {
             generate_landscape_on_rectangle(cells,
                 i * 10,
-                j_shft,
+                j_shift,
                 i * 10 + 9,
-                j_shft + cells[0].length % 20 - 1);
+                j_shift + cells[0].length % 20 - 1);
 
             generate_landscape_on_rectangle(cells,
                 cells.length - (i + 1) * 10,
-                j_shft,
+                j_shift,
                 cells.length - (i + 1) * 10 + 9,
-                j_shft + cells[0].length % 20 - 1);
+                j_shift + cells[0].length % 20 - 1);
         }
     }
 
     if (cells.length % 20 !== 0 && cells[0].length % 20 !== 0) {
         generate_landscape_on_rectangle(cells,
             i_shift,
-            j_shft,
+            j_shift,
             i_shift + cells.length % 20 - 1,
-            j_shft + cells[0].length % 20 - 1);
+            j_shift + cells[0].length % 20 - 1);
     }
 }
 
-function update_cells(cells) {
+function check_neighbours(cells, i, j, player, dir_i, dir_j, cell_styles, tower_styles) {
+    let f = cells[i + dir_i][j + dir_j].state === cell_types.FREE
+        || cells[i + dir_i][j + dir_j].state === cell_types.FREE_TOWER;
+    f |= (cell_styles.has(cells[i + dir_i][j + dir_j].state) && cells[i + dir_i][j + dir_j].state !== player.cell_style);
+    f |= (tower_styles.has(cells[i + dir_i][j + dir_j].state) && cells[i + dir_i][j + dir_j].state !== player.tower_style);
+    return f;
+}
 
+function update_map(cells, players, cell_styles, tower_styles) {
+    for (let k = 0; k < players.length; k++) {
+        let edge = [[], [], [], []];
+        for (let i = 0; i < cells.length; i++) {
+            for (let j = 0; j < cells[i].length; j++) {
+                if (cells[i][j].state !== players[k].cell_style && cells[i][j].state !== players[k].tower_style)
+                    continue;
+                if (i !== 0 && check_neighbours(cells, i, j, players[k], -1, 0, cell_styles, tower_styles)) {
+                    edge[direction.UP].push([i - 1, j]);
+                }
+                if (i !== cells.length - 1 && check_neighbours(cells, i, j, players[k], 1, 0, cell_styles, tower_styles)) {
+                    edge[direction.DOWN].push([i + 1, j]);
+                }
+                if (j !== 0 && check_neighbours(cells, i, j, players[k], 0, -1, cell_styles, tower_styles)) {
+                    edge[direction.LEFT].push([i, j - 1]);
+                }
+                if (j !== cells[i].length - 1 && check_neighbours(cells, i, j, players[k], 0, 1, cell_styles, tower_styles)) {
+                    edge[direction.RIGHT].push([i, j + 1]);
+                }
+            }
+        }
+        let prob = [5, 5, 5, 5];
+        if (players[k].direction !== direction.NONE) {
+            prob[players[k].direction] += 80;
+        } else {
+            prob = [25, 25, 25, 25];
+        }
+        let sum_zeros = 0;
+        let kol_non_zeros = 4;
+        for (let i = 0; i < 4; i++) {
+            if (edge[i].length === 0) {
+                sum_zeros += prob[i];
+                prob[i] = 0;
+                kol_non_zeros--;
+            }
+        }
+        let add = Math.trunc(sum_zeros / kol_non_zeros);
+        for (let i = 0; i < 4; i++) {
+            if (prob[i] !== 0) {
+                prob[i] += add;
+                sum_zeros -= add;
+            }
+        }
+        for (let i = 0; i < 4 && sum_zeros !== 0; i++) {
+            if (prob[i] !== 0) {
+                prob[i]++;
+                sum_zeros--;
+            }
+        }
+        let rnd = get_random_int_from_range(1, 100);
+        for (let i = 0; i < 4; i++) {
+            if (rnd <= prob[i]) {
+                let index = edge[i][get_random_int_from_range(0, edge[i].length - 1)];
+                if (cells[index[0]][index[1]].state === cell_types.FREE_TOWER
+                    || tower_styles.has(cells[index[0]][index[1]].state)) {
+                    cells[index[0]][index[1]].state = players[k].tower_style;
+                }
+                if (cells[index[0]][index[1]].state === cell_types.FREE
+                    || cell_styles.has(cells[index[0]][index[1]].state)) {
+                    cells[index[0]][index[1]].state = players[k].cell_style;
+                    console.log("huj");
+                }
+                break;
+            } else {
+                rnd -= prob[i];
+            }
+        }
+    }
 }
 
 function update_points(cells, players) {
 
 }
 
-function game_handler(cells, tick, ...players) {
+function game_handler(cells, tick, players, cell_styles, tower_styles) {
     if (tick % random_tick_speed === 0) {
-
+        update_map(cells, players, cell_styles, tower_styles);
     }
 
     let arr = [cell_types.P1, cell_types.P2];
@@ -183,11 +256,20 @@ function game_handler(cells, tick, ...players) {
 }
 
 function start_game() {
+    let players = [new Player(cell_types.P1, cell_types.P1_TOWER, "", 0, 0, direction.RIGHT), new Player(cell_types.P2, cell_types.P2_TOWER)];
+    let tower_styles = new Set();
+    let cell_styles = new Set();
+    for (let player of players) {
+        cell_styles.add(player.cell_style);
+        tower_styles.add(player.tower_style);
+    }
     let cells = generate_table(field_height, field_width);
-    generate_map(cells);
+    generate_map(cells, players);
+
+
     let tick = 0;
     let ident = setInterval(() => {
-        game_handler(cells, tick);
+        game_handler(cells, tick, players, cell_styles, tower_styles);
         tick = (tick + 1) % tps;
     }, 1000 / tps);
 

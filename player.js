@@ -9,12 +9,12 @@ export const direction = {
 };
 
 export class Player {
-    constructor(cell, tower, name = "Player", strength = 0, speed = 0, dir = direction.NONE) {
-        this.cell = cell;
-        this.tower = tower;
+    constructor(cell_style, tower_style, name = "Player", strength = 0, speed = 0, dir = direction.NONE) {
+        this.cell_style = cell_style;
+        this.tower_style = tower_style;
         this.name = name;
         this.strength = strength;
         this.speed = speed;
-        this.dir = dir;
+        this.direction = dir;
     }
 }

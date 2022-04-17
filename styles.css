@@ -8,11 +8,11 @@ td {
 }
 
 .wall_cell {
-    background: gray;
+    background: black;
 }
 
 .free_tower_cell {
-    background: black;
+    background: gray;
 }
 
 .p1_cell {

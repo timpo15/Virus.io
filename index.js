@@ -1,11 +1,12 @@
 import {Cell, cell_types} from "./cell.js";
 import {direction, Player} from "./player.js";
 
-const field_height = 15;
-const field_width = 15;
+const field_height = 20;
+const field_width = 20;
 const random_tick_speed = 1;
-const tps = 20;
-const point_tick_speed = 20;
+const tps = 60;
+const point_tick_speed = 60;
+const max_player_speed = 1;
 
 function generate_table(n, m) {
     let cells = new Array(n);
@@ -46,9 +47,10 @@ function get_random_free_cell(cells, i_min, j_min, i_max, j_max) {
     return [i, j];
 }
 
-function add_object(cells, i_min, j_min, i_max, j_max, object_type) {
+function add_object(cells, i_min, j_min, i_max, j_max, object_type, player = undefined) {
     let [i, j] = get_random_free_cell(cells, i_min, j_min, i_max, j_max);
     cells[i][j].state = object_type;
+    cells[i][j].player = player;
 }
 
 function generate_wall_on_rectangle(cells, i_min, j_min, i_max, j_max) {
@@ -90,7 +92,7 @@ function generate_landscape_on_rectangle(cells, i_min, j_min, i_max, j_max) {
 function generate_map(cells, players) {
     let positions = [[4, 4], [cells.length - 5, cells[0].length - 5], [4, cells[0].length - 5], [cells.length - 5, 4]];
     for (let i = 0; i < players.length; i++) {
-        add_object(cells, positions[i][0], positions[i][1], positions[i][0], positions[i][1], players[i].tower_style);
+        add_object(cells, positions[i][0], positions[i][1], positions[i][0], positions[i][1], players[i].tower_style, players[i]);
     }
     for (let i = 0; (i + 1) * 20 <= cells.length; i++) {
         for (let j = 0; (j + 1) * 20 <= cells[0].length; j++) {
@@ -163,77 +165,86 @@ function generate_map(cells, players) {
 function check_neighbours(cells, i, j, player, dir_i, dir_j, cell_styles, tower_styles) {
     let f = cells[i + dir_i][j + dir_j].state === cell_types.FREE
         || cells[i + dir_i][j + dir_j].state === cell_types.FREE_TOWER;
-    f |= (cell_styles.has(cells[i + dir_i][j + dir_j].state) && cells[i + dir_i][j + dir_j].state !== player.cell_style);
-    f |= (tower_styles.has(cells[i + dir_i][j + dir_j].state) && cells[i + dir_i][j + dir_j].state !== player.tower_style);
+    f |= cell_styles.has(cells[i + dir_i][j + dir_j].state)
+        && cells[i + dir_i][j + dir_j].state !== player.cell_style
+        && cells[i + dir_i][j + dir_j].player.strength <= player.strength;
+    f |= tower_styles.has(cells[i + dir_i][j + dir_j].state)
+        && cells[i + dir_i][j + dir_j].state !== player.tower_style
+        && cells[i + dir_i][j + dir_j].player.strength <= player.strength;
     return f;
 }
 
-function update_map(cells, players, cell_styles, tower_styles) {
-    for (let k = 0; k < players.length; k++) {
-        let edge = [[], [], [], []];
-        for (let i = 0; i < cells.length; i++) {
-            for (let j = 0; j < cells[i].length; j++) {
-                if (cells[i][j].state !== players[k].cell_style && cells[i][j].state !== players[k].tower_style)
-                    continue;
-                if (i !== 0 && check_neighbours(cells, i, j, players[k], -1, 0, cell_styles, tower_styles)) {
-                    edge[direction.UP].push([i - 1, j]);
-                }
-                if (i !== cells.length - 1 && check_neighbours(cells, i, j, players[k], 1, 0, cell_styles, tower_styles)) {
-                    edge[direction.DOWN].push([i + 1, j]);
-                }
-                if (j !== 0 && check_neighbours(cells, i, j, players[k], 0, -1, cell_styles, tower_styles)) {
-                    edge[direction.LEFT].push([i, j - 1]);
-                }
-                if (j !== cells[i].length - 1 && check_neighbours(cells, i, j, players[k], 0, 1, cell_styles, tower_styles)) {
-                    edge[direction.RIGHT].push([i, j + 1]);
-                }
+function get_prob(edge, player) {
+    let prob = [5, 5, 5, 5];
+    if (player.direction !== direction.NONE) {
+        prob[player.direction] += 80;
+    } else {
+        prob = [25, 25, 25, 25];
+    }
+    let sum_zeros = 0;
+    let kol_non_zeros = 4;
+    for (let i = 0; i < 4; i++) {
+        if (edge[i].length === 0) {
+            sum_zeros += prob[i];
+            prob[i] = 0;
+            kol_non_zeros--;
+        }
+    }
+    let add = Math.trunc(sum_zeros / kol_non_zeros);
+    for (let i = 0; i < 4; i++) {
+        if (prob[i] !== 0) {
+            prob[i] += add;
+            sum_zeros -= add;
+        }
+    }
+    for (let i = 0; i < 4 && sum_zeros !== 0; i++) {
+        if (prob[i] !== 0) {
+            prob[i]++;
+            sum_zeros--;
+        }
+    }
+    return prob;
+}
+
+function update_map(cells, player, cell_styles, tower_styles) {
+    let edge = [[], [], [], []];
+    for (let i = 0; i < cells.length; i++) {
+        for (let j = 0; j < cells[i].length; j++) {
+            if (cells[i][j].state !== player.cell_style && cells[i][j].state !== player.tower_style)
+                continue;
+            if (i !== 0 && check_neighbours(cells, i, j, player, -1, 0, cell_styles, tower_styles)) {
+                edge[direction.UP].push([i - 1, j]);
+            }
+            if (i !== cells.length - 1 && check_neighbours(cells, i, j, player, 1, 0, cell_styles, tower_styles)) {
+                edge[direction.DOWN].push([i + 1, j]);
+            }
+            if (j !== 0 && check_neighbours(cells, i, j, player, 0, -1, cell_styles, tower_styles)) {
+                edge[direction.LEFT].push([i, j - 1]);
+            }
+            if (j !== cells[i].length - 1 && check_neighbours(cells, i, j, player, 0, 1, cell_styles, tower_styles)) {
+                edge[direction.RIGHT].push([i, j + 1]);
             }
         }
-        let prob = [5, 5, 5, 5];
-        if (players[k].direction !== direction.NONE) {
-            prob[players[k].direction] += 80;
+    }
+    let prob = get_prob(edge, player);
+    let rnd = get_random_int_from_range(1, 100);
+    for (let i = 0; i < 4; i++) {
+        if (rnd <= prob[i]) {
+            let index = edge[i][get_random_int_from_range(0, edge[i].length - 1)];
+            if (cells[index[0]][index[1]].state === cell_types.FREE_TOWER
+                || tower_styles.has(cells[index[0]][index[1]].state)) {
+                cells[index[0]][index[1]].state = player.tower_style;
+                cells[index[0]][index[1]].player = player;
+            }
+            if (cells[index[0]][index[1]].state === cell_types.FREE
+                || cell_styles.has(cells[index[0]][index[1]].state)) {
+                cells[index[0]][index[1]].state = player.cell_style;
+                cells[index[0]][index[1]].player = player;
+                console.log("huj");
+            }
+            break;
         } else {
-            prob = [25, 25, 25, 25];
-        }
-        let sum_zeros = 0;
-        let kol_non_zeros = 4;
-        for (let i = 0; i < 4; i++) {
-            if (edge[i].length === 0) {
-                sum_zeros += prob[i];
-                prob[i] = 0;
-                kol_non_zeros--;
-            }
-        }
-        let add = Math.trunc(sum_zeros / kol_non_zeros);
-        for (let i = 0; i < 4; i++) {
-            if (prob[i] !== 0) {
-                prob[i] += add;
-                sum_zeros -= add;
-            }
-        }
-        for (let i = 0; i < 4 && sum_zeros !== 0; i++) {
-            if (prob[i] !== 0) {
-                prob[i]++;
-                sum_zeros--;
-            }
-        }
-        let rnd = get_random_int_from_range(1, 100);
-        for (let i = 0; i < 4; i++) {
-            if (rnd <= prob[i]) {
-                let index = edge[i][get_random_int_from_range(0, edge[i].length - 1)];
-                if (cells[index[0]][index[1]].state === cell_types.FREE_TOWER
-                    || tower_styles.has(cells[index[0]][index[1]].state)) {
-                    cells[index[0]][index[1]].state = players[k].tower_style;
-                }
-                if (cells[index[0]][index[1]].state === cell_types.FREE
-                    || cell_styles.has(cells[index[0]][index[1]].state)) {
-                    cells[index[0]][index[1]].state = players[k].cell_style;
-                    console.log("huj");
-                }
-                break;
-            } else {
-                rnd -= prob[i];
-            }
+            rnd -= prob[i];
         }
     }
 }
@@ -243,8 +254,10 @@ function update_points(cells, players) {
 }
 
 function game_handler(cells, tick, players, cell_styles, tower_styles) {
-    if (tick % random_tick_speed === 0) {
-        update_map(cells, players, cell_styles, tower_styles);
+    for (let k = 0; k < players.length; k++) {
+        if (tick % (random_tick_speed + max_player_speed - players[k].speed) === 0) {
+            update_map(cells, players[k], cell_styles, tower_styles);
+        }
     }
 
     let arr = [cell_types.P1, cell_types.P2];
@@ -256,7 +269,11 @@ function game_handler(cells, tick, players, cell_styles, tower_styles) {
 }
 
 function start_game() {
-    let players = [new Player(cell_types.P1, cell_types.P1_TOWER, "", 0, 0, direction.RIGHT), new Player(cell_types.P2, cell_types.P2_TOWER)];
+    let players = [
+        new Player(cell_types.P1, cell_types.P1_TOWER, "", 0, 0, direction.NONE),
+        new Player(cell_types.P2, cell_types.P2_TOWER),
+        new Player(cell_types.P3, cell_types.P3_TOWER),
+        new Player(cell_types.P4, cell_types.P4_TOWER)];
     let tower_styles = new Set();
     let cell_styles = new Set();
     for (let player of players) {

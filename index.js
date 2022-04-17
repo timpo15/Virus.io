@@ -1,7 +1,7 @@
 import {Cell, cell_types} from "./cell.js";
 
-const field_height = 35;
-const field_width = 35;
+const field_height = 10;
+const field_width = 10;
 const random_tick_speed = 5;
 const tps = 20;
 const point_tick_speed = 20;
@@ -51,8 +51,8 @@ function add_object(cells, i_min, j_min, i_max, j_max, object_type) {
 }
 
 function generate_wall_on_rectangle(cells, i_min, j_min, i_max, j_max) {
-    const di = [-1, -1, -1, 0, 1, 1, 1, 0];
-    const dj = [-1, 0, 1, 1, 1, 0, -1, -1];
+    const di = [-1, 0, 1, 0];
+    const dj = [0, -1, 0, 1];
     let size = get_random_int_from_range(3, 8);
     let used = new Set();
     let start = get_random_free_cell(cells, i_min, j_min, i_max, j_max)
@@ -64,7 +64,7 @@ function generate_wall_on_rectangle(cells, i_min, j_min, i_max, j_max) {
         }
         let [i, j] = queue.shift();
         add_object(cells, i, j, i, j, cell_types.WALL);
-        for (let k = 0; k < 8; k++) {
+        for (let k = 0; k < 4; k++) {
             let new_i = i + di[k];
             let new_j = j + dj[k];
             if (i_min <= new_i && new_i <= i_max && j_min <= new_j && new_j <= j_max && !used.has(new_i * cells[0].length + new_j) && cells[new_i][new_j].state === cell_types.FREE) {

@@ -1,8 +1,8 @@
 import {Cell, cell_types} from "./cell.js";
 import {direction, Player} from "./player.js";
 
-const field_height = 20;
-const field_width = 20;
+const field_height = 30;
+const field_width = 40;
 const random_tick_speed = 1;
 const tps = 60;
 const point_tick_speed = 60;
@@ -56,7 +56,7 @@ function add_object(cells, i_min, j_min, i_max, j_max, object_type, player = und
 function generate_wall_on_rectangle(cells, i_min, j_min, i_max, j_max) {
     const di = [-1, 0, 1, 0];
     const dj = [0, -1, 0, 1];
-    let size = get_random_int_from_range(3, 8);
+    let size = get_random_int_from_range(24, 25);
     let used = new Set();
     let start = get_random_free_cell(cells, i_min, j_min, i_max, j_max)
     let queue = [start];
@@ -231,10 +231,16 @@ function update_map(cells, player, cell_styles, tower_styles) {
     for (let i = 0; i < 4; i++) {
         if (rnd <= prob[i]) {
             let index = edge[i][get_random_int_from_range(0, edge[i].length - 1)];
+            let is_opponent_tower = tower_styles.has(cells[index[0]][index[1]].state);
             if (cells[index[0]][index[1]].state === cell_types.FREE_TOWER
-                || tower_styles.has(cells[index[0]][index[1]].state)) {
+                || is_opponent_tower) {
+                if (is_opponent_tower) {
+                    cells[index[0]][index[1]].player.tower_num--;
+                }
                 cells[index[0]][index[1]].state = player.tower_style;
                 cells[index[0]][index[1]].player = player;
+                player.tower_num++;
+                continue;
             }
             if (cells[index[0]][index[1]].state === cell_types.FREE
                 || cell_styles.has(cells[index[0]][index[1]].state)) {
@@ -249,7 +255,23 @@ function update_map(cells, player, cell_styles, tower_styles) {
     }
 }
 
-function update_points(cells, players) {
+function update_points(player) {
+    player.points += player.tower_num;
+}
+
+function process_loss(cells, players) {
+    for (let player of players) {
+        if (player.tower_num === 0) {
+            for (let i = 0; i < cells.length; i++) {
+                for (let j = 0; j < cells[i].length; j++) {
+                    if (cells[i][j].state === player.tower_style)
+                        cells[i][j].state = cell_types.FREE_TOWER;
+                    else if (cells[i][j].state === player.cell_style)
+                        cells[i][j].state = cell_types.FREE;
+                }
+            }
+        }
+    }
 
 }
 
@@ -257,6 +279,10 @@ function game_handler(cells, tick, players, cell_styles, tower_styles) {
     for (let k = 0; k < players.length; k++) {
         if (tick % (random_tick_speed + max_player_speed - players[k].speed) === 0) {
             update_map(cells, players[k], cell_styles, tower_styles);
+            process_loss(cells, players);
+        }
+        if (tick % point_tick_speed === 0) {
+            update_points(players[k]);
         }
     }
 
@@ -271,9 +297,9 @@ function game_handler(cells, tick, players, cell_styles, tower_styles) {
 function start_game() {
     let players = [
         new Player(cell_types.P1, cell_types.P1_TOWER, "", 0, 0, direction.NONE),
-        new Player(cell_types.P2, cell_types.P2_TOWER),
-        new Player(cell_types.P3, cell_types.P3_TOWER),
-        new Player(cell_types.P4, cell_types.P4_TOWER)];
+        new Player(cell_types.P2, cell_types.P2_TOWER, "", 0, 0, direction.NONE),
+        new Player(cell_types.P3, cell_types.P3_TOWER, "", 0, 0, direction.NONE),
+        new Player(cell_types.P4, cell_types.P4_TOWER, "", 0, 0, direction.NONE)];
     let tower_styles = new Set();
     let cell_styles = new Set();
     for (let player of players) {

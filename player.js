@@ -16,5 +16,11 @@ export class Player {
         this.strength = strength;
         this.speed = speed;
         this.direction = dir;
+        this.tower_num = 1;
+        this.points = 0;
     }
+
+    // allocate_points() {
+    //     for_strength
+    // }
 }

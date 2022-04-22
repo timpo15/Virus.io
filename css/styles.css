@@ -16,8 +16,12 @@ body {
     background-color: #B9F0F8;
 }
 
+.hidden.hidden {
+    display: none;
+}
+
 .container {
-    width: 960px;
+    width: 1240px;
     height: 100vh;
     margin: 0 auto;
 }
@@ -29,6 +33,21 @@ body {
     justify-content: center;
     align-items: center;
     padding-bottom: 50px;
+}
+
+.game-window {
+    width: 100%;
+    background-color: #EEFDFF;
+    height: 70vh;
+    border-radius: 40px;
+}
+
+.game-flex {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
 }
 
 .menu {
@@ -73,6 +92,91 @@ body {
 td {
     width: 20px;
     height: 20px;
+    border: 1px solid black;
+}
+
+.game-controls {
+    width: 100%;
+    height: 20vh;
+    display: flex;
+    justify-content: space-around;
+}
+
+.moves td {
+    width: 60px;
+    height: 40px;
+    text-align: center;
+    border: none;
+}
+
+.moves td button {
+    width: 50px;
+}
+
+.moves {
+    background-color: #eefdff;
+    border-width: 2px;
+    border-style: outset;
+    border-color: #6896f8;
+    border-radius: 30px;
+    padding: 5px;
+}
+
+.ui-button {
+    display: block;
+    width: 200px;
+    background: #EEFDFF;
+    border-radius: 20px;
+    height: 50px;
+    border-width: 2px;
+    border-color: #6896f8;
+}
+
+.buttons-upgrade, .button-give-up {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.statistics {
+    width: 200px;
+    text-align: center;
+}
+
+#player-score {
+    height: 30%;
+    font-family: sans-serif;
+    padding: 5px 0;
+    background: #EEFDFF;
+    border: 2px solid #6896f8;
+    border-top-right-radius: 30px;
+    border-top-left-radius: 30px;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 25px;
+    color: #778697;
+}
+
+.captured-table {
+    background: #EEFDFF;
+    border: 2px solid #6896f8;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-top: none;
+    height: 70%;
+    font-weight: 500;
+    font-size: 17px;
+    line-height: 20px;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.game-window {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .free_cell {

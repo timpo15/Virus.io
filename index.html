@@ -10,16 +10,70 @@
 </head>
 <body>
 
-<div class="container">
-    <div class="center-element">
-        <div class="menu">
-            <h1 class="logo">Virus.io</h1>
-            <input type="text" name="nickname" id="nickname" placeholder="Enter name" class="menu_list">
-            <button class="menu_list">Play</button>
-            <button class="menu_list">Rules</button>
+<section class="main hidden">
+    <div class="container">
+        <div class="center-element">
+            <div class="menu">
+                <h1 class="logo">Virus.io</h1>
+                <input type="text" name="nickname" id="nickname" placeholder="Enter name" class="menu_list">
+                <button class="menu_list">Play</button>
+                <button class="menu_list">Rules</button>
+            </div>
         </div>
     </div>
-</div>
+</section>
+
+<section class="game">
+    <div class="container">
+        <div class="game-flex">
+            <div class="game-window">
+                <table>
+                    <tbody id="game-field" border="1">
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="game-controls">
+                <table class="moves">
+                    <tr>
+                        <td></td>
+                        <td><button id="move-up">Up</button></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><button id="move-left">Left</button></td>
+                        <td><button id="move-none">Huj</button></td>
+                        <td><button id="move-right">Right</button></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><button id="move-down">Down</button></td>
+                        <td></td>
+                    </tr>
+                </table>
+
+                <div class="buttons-upgrade">
+                    <button id="speed" class="ui-button">Speed</button>
+                    <button id="power" class="ui-button">Power</button>
+                </div>
+
+                <div class="statistics">
+                    <div id="player-score">Score: <span>228</span></div>
+                    <div class="captured-table">
+                        <div class="player1">Captured: <span>22</span></div>
+                        <div class="player2">Captured: <span>8</span></div>
+                    </div>
+                </div>
+
+                <div class="button-give-up">
+                    <button class="give-up ui-button">Give up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
 
 <script src="index.js" type="module"></script>
 </body>

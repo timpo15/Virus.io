@@ -8,9 +8,7 @@ const point_tick_speed = 20;
 function generate_table(n, m) {
     let cells = new Array(n);
 
-    let body = document.getElementsByTagName("body")[0];
-    let tbl = document.createElement("table");
-    let tblBody = document.createElement("tbody");
+    let tblBody = document.querySelector("#game-field");
 
     for (let i = 0; i < n; i++) {
         cells[i] = new Array(m);
@@ -25,9 +23,6 @@ function generate_table(n, m) {
         tblBody.appendChild(row);
     }
 
-    tbl.setAttribute("border", "1");
-    tbl.appendChild(tblBody);
-    body.appendChild(tbl);
     return cells;
 }
 
@@ -44,16 +39,16 @@ function game_handler(cells, tick, ...players) {
 
     }
 
-    // let arr = [cell_types.P1, cell_types.P2];
-    // for (let i = 0; i < cells.length; i++) {
-    //     for (let j = 0; j < cells[i].length; j++) {
-    //         cells[i][j].state = arr[Math.trunc(Math.random() * 2)];
-    //     }
-    // }
+    let arr = [cell_types.P1, cell_types.P2];
+    for (let i = 0; i < cells.length; i++) {
+        for (let j = 0; j < cells[i].length; j++) {
+            cells[i][j].state = arr[Math.trunc(Math.random() * 2)];
+        }
+    }
 }
 
 function start_game() {
-    let cells = generate_table(field_size, field_size);
+    let cells = generate_table(20, 40);
     let tick = 0;
     let ident = setInterval(() => {
         game_handler(cells, tick);
@@ -62,4 +57,4 @@ function start_game() {
 
 }
 
-// start_game();
+start_game();

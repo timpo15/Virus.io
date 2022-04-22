@@ -6,7 +6,7 @@ const field_width = 40;
 const random_tick_speed = 1;
 const tps = 60;
 const point_tick_speed = 60;
-const max_player_speed = 1;
+const max_player_speed = 20;
 
 function generate_table(n, m) {
     let cells = new Array(n);
@@ -86,6 +86,58 @@ function generate_landscape_on_rectangle(cells, i_min, j_min, i_max, j_max) {
     add_object(cells, i_min, j_min, i_max, j_max, cell_types.FREE_TOWER);
     if (i_max - i_min + 1 >= 10 && j_max - j_min + 1 >= 10) {
         generate_wall_on_rectangle(cells, i_min, j_min, i_max, j_max);
+    }
+}
+
+function check_tower_connectivity_and_fill_holes(cells, tower_styles) {
+    let towers_number = 0;
+    let any_tower = undefined;
+    for (let i = 0; i < cells.length; i++) {
+        for (let j = 0; j < cells[i].length; j++) {
+            if (cells[i][j].state === cell_types.FREE_TOWER || tower_styles.has(cells[i][j].state)) {
+                towers_number++;
+                any_tower = [i, j];
+            }
+        }
+    }
+    if (any_tower === undefined) {
+        return true;
+    }
+    const di = [-1, 0, 1, 0];
+    const dj = [0, -1, 0, 1];
+    let stack = [any_tower];
+    let used = new Set();
+    used.add(any_tower[0] * cells[0].length + any_tower[1]);
+    let visited_towers = 0;
+    while (stack.length > 0) {
+        let [i, j] = stack.pop();
+        if (cells[i][j].state === cell_types.FREE_TOWER || tower_styles.has(cells[i][j].state)) {
+            visited_towers++;
+        }
+        for (let k = 0; k < 4; k++) {
+            let new_i = i + di[k];
+            let new_j = j + dj[k];
+            if (new_i >= 0 && new_j >= 0 && new_i < cells.length && new_j < cells[0].length && cells[new_i][new_j].state !== cell_types.WALL && !used.has(new_i * cells[0].length + new_j)) {
+                used.add(new_i * cells[0].length + new_j);
+                stack.push([new_i, new_j]);
+            }
+        }
+    }
+    for (let i = 0; i < cells.length; i++) {
+        for (let j = 0; j < cells[i].length; j++) {
+            if (cells[i][j].state !== cell_types.WALL && !used.has(i * cells[0].length + j)) {
+                cells[i][j].state = cell_types.WALL;
+            }
+        }
+    }
+    return visited_towers === towers_number;
+}
+
+function clear_map(cells) {
+    for (let i = 0; i < cells.length; i++) {
+        for (let j = 0; j < cells[i].length; j++) {
+            cells[i][j].state = cell_types.FREE;
+        }
     }
 }
 
@@ -246,7 +298,6 @@ function update_map(cells, player, cell_styles, tower_styles) {
                 || cell_styles.has(cells[index[0]][index[1]].state)) {
                 cells[index[0]][index[1]].state = player.cell_style;
                 cells[index[0]][index[1]].player = player;
-                console.log("huj");
             }
             break;
         } else {
@@ -296,8 +347,8 @@ function game_handler(cells, tick, players, cell_styles, tower_styles) {
 
 function start_game() {
     let players = [
-        new Player(cell_types.P1, cell_types.P1_TOWER, "", 0, 0, direction.NONE),
-        new Player(cell_types.P2, cell_types.P2_TOWER, "", 0, 0, direction.NONE),
+        new Player(cell_types.P1, cell_types.P1_TOWER, "", 20, 20, direction.UP),
+        new Player(cell_types.P2, cell_types.P2_TOWER, "", 20, 20, direction.DOWN),
         new Player(cell_types.P3, cell_types.P3_TOWER, "", 0, 0, direction.NONE),
         new Player(cell_types.P4, cell_types.P4_TOWER, "", 0, 0, direction.NONE)];
     let tower_styles = new Set();
@@ -307,7 +358,11 @@ function start_game() {
         tower_styles.add(player.tower_style);
     }
     let cells = generate_table(field_height, field_width);
-    generate_map(cells, players);
+    do {
+        clear_map(cells);
+        generate_map(cells, players);
+    }
+    while (!check_tower_connectivity_and_fill_holes(cells, tower_styles));
 
 
     let tick = 0;

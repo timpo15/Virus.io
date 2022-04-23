@@ -1,9 +1,12 @@
 import {Cell, cell_types} from "./cell.js";
+import {direction, Player} from "./player.js";
 
-const field_size = 25;
-const random_tick_speed = 5;
-const tps = 20;
-const point_tick_speed = 20;
+const field_height = 30;
+const field_width = 40;
+const random_tick_speed = 1;
+const tps = 60;
+const point_tick_speed = 60;
+const max_player_speed = 1;
 
 function generate_table(n, m) {
     let cells = new Array(n);
@@ -26,32 +29,286 @@ function generate_table(n, m) {
     return cells;
 }
 
-function update_cells(cells) {
-
+function get_random_int_from_range(min, max) {
+    return Math.trunc(Math.random() * (max - min + 1)) + min;
 }
 
-function update_points(cells, players) {
-
+function get_random_free_cell(cells, i_min, j_min, i_max, j_max) {
+    let i = 0;
+    let j = 0;
+    do {
+        i = get_random_int_from_range(i_min, i_max);
+        j = get_random_int_from_range(j_min, j_max);
+    } while (cells[i][j].state !== cell_types.FREE);
+    return [i, j];
 }
 
-function game_handler(cells, tick, ...players) {
-    if (tick % random_tick_speed === 0) {
+function add_object(cells, i_min, j_min, i_max, j_max, object_type, player = undefined) {
+    let [i, j] = get_random_free_cell(cells, i_min, j_min, i_max, j_max);
+    cells[i][j].state = object_type;
+    cells[i][j].player = player;
+}
 
-    }
-
-    let arr = [cell_types.P1, cell_types.P2];
-    for (let i = 0; i < cells.length; i++) {
-        for (let j = 0; j < cells[i].length; j++) {
-            cells[i][j].state = arr[Math.trunc(Math.random() * 2)];
+function generate_wall_on_rectangle(cells, i_min, j_min, i_max, j_max) {
+    const di = [-1, 0, 1, 0];
+    const dj = [0, -1, 0, 1];
+    let size = get_random_int_from_range(24, 25);
+    let used = new Set();
+    let start = get_random_free_cell(cells, i_min, j_min, i_max, j_max)
+    let queue = [start];
+    used.add(start[0] * cells[0].length + start[1]);
+    for (let _ = 0; _ < size; _++) {
+        if (queue.length === 0) {
+            break;
+        }
+        let [i, j] = queue.shift();
+        add_object(cells, i, j, i, j, cell_types.WALL);
+        for (let k = 0; k < 4; k++) {
+            let new_i = i + di[k];
+            let new_j = j + dj[k];
+            if (i_min <= new_i && new_i <= i_max && j_min <= new_j && new_j <= j_max && !used.has(new_i * cells[0].length + new_j) && cells[new_i][new_j].state === cell_types.FREE) {
+                queue.push([new_i, new_j]);
+                used.add(new_i * cells[0].length + new_j);
+                let random_index = get_random_int_from_range(0, queue.length - 1);
+                let temp = queue[random_index];
+                queue[random_index] = queue[queue.length - 1];
+                queue[queue.length - 1] = temp;
+            }
         }
     }
 }
 
+function generate_landscape_on_rectangle(cells, i_min, j_min, i_max, j_max) {
+    add_object(cells, i_min, j_min, i_max, j_max, cell_types.FREE_TOWER);
+    if (i_max - i_min + 1 >= 10 && j_max - j_min + 1 >= 10) {
+        generate_wall_on_rectangle(cells, i_min, j_min, i_max, j_max);
+    }
+}
+
+function generate_map(cells, players) {
+    let positions = [[4, 4], [cells.length - 5, cells[0].length - 5], [4, cells[0].length - 5], [cells.length - 5, 4]];
+    for (let i = 0; i < players.length; i++) {
+        add_object(cells, positions[i][0], positions[i][1], positions[i][0], positions[i][1], players[i].tower_style, players[i]);
+    }
+    for (let i = 0; (i + 1) * 20 <= cells.length; i++) {
+        for (let j = 0; (j + 1) * 20 <= cells[0].length; j++) {
+            generate_landscape_on_rectangle(cells,
+                i * 10,
+                j * 10,
+                i * 10 + 9,
+                j * 10 + 9);
+            generate_landscape_on_rectangle(cells,
+                cells.length - (i + 1) * 10,
+                j * 10,
+                cells.length - (i + 1) * 10 + 9,
+                j * 10 + 9);
+            generate_landscape_on_rectangle(cells,
+                i * 10,
+                cells[0].length - (j + 1) * 10,
+                i * 10 + 9,
+                cells[0].length - (j + 1) * 10 + 9);
+            generate_landscape_on_rectangle(cells,
+                cells.length - (i + 1) * 10,
+                cells[0].length - (j + 1) * 10,
+                cells.length - (i + 1) * 10 + 9,
+                cells[0].length - (j + 1) * 10 + 9);
+        }
+    }
+
+    let i_shift = Math.trunc(cells.length / 20) * 10;
+    let j_shift = Math.trunc(cells[0].length / 20) * 10;
+
+    if (cells.length % 20 !== 0) {
+        for (let j = 0; (j + 1) * 20 < cells[0].length; j++) {
+            generate_landscape_on_rectangle(cells,
+                i_shift,
+                j * 10,
+                i_shift + cells.length % 20 - 1,
+                j * 10 + 9);
+            generate_landscape_on_rectangle(cells,
+                i_shift,
+                cells[0].length - (j + 1) * 10,
+                i_shift + cells.length % 20 - 1,
+                cells[0].length - (j + 1) * 10 + 9);
+        }
+    }
+
+    if (cells[0].length % 20 !== 0) {
+        for (let i = 0; (i + 1) * 20 < cells.length; i++) {
+            generate_landscape_on_rectangle(cells,
+                i * 10,
+                j_shift,
+                i * 10 + 9,
+                j_shift + cells[0].length % 20 - 1);
+
+            generate_landscape_on_rectangle(cells,
+                cells.length - (i + 1) * 10,
+                j_shift,
+                cells.length - (i + 1) * 10 + 9,
+                j_shift + cells[0].length % 20 - 1);
+        }
+    }
+
+    if (cells.length % 20 !== 0 && cells[0].length % 20 !== 0) {
+        generate_landscape_on_rectangle(cells,
+            i_shift,
+            j_shift,
+            i_shift + cells.length % 20 - 1,
+            j_shift + cells[0].length % 20 - 1);
+    }
+}
+
+function check_neighbours(cells, i, j, player, dir_i, dir_j, cell_styles, tower_styles) {
+    let f = cells[i + dir_i][j + dir_j].state === cell_types.FREE
+        || cells[i + dir_i][j + dir_j].state === cell_types.FREE_TOWER;
+    f |= cell_styles.has(cells[i + dir_i][j + dir_j].state)
+        && cells[i + dir_i][j + dir_j].state !== player.cell_style
+        && cells[i + dir_i][j + dir_j].player.strength <= player.strength;
+    f |= tower_styles.has(cells[i + dir_i][j + dir_j].state)
+        && cells[i + dir_i][j + dir_j].state !== player.tower_style
+        && cells[i + dir_i][j + dir_j].player.strength <= player.strength;
+    return f;
+}
+
+function get_prob(edge, player) {
+    let prob = [5, 5, 5, 5];
+    if (player.direction !== direction.NONE) {
+        prob[player.direction] += 80;
+    } else {
+        prob = [25, 25, 25, 25];
+    }
+    let sum_zeros = 0;
+    let kol_non_zeros = 4;
+    for (let i = 0; i < 4; i++) {
+        if (edge[i].length === 0) {
+            sum_zeros += prob[i];
+            prob[i] = 0;
+            kol_non_zeros--;
+        }
+    }
+    let add = Math.trunc(sum_zeros / kol_non_zeros);
+    for (let i = 0; i < 4; i++) {
+        if (prob[i] !== 0) {
+            prob[i] += add;
+            sum_zeros -= add;
+        }
+    }
+    for (let i = 0; i < 4 && sum_zeros !== 0; i++) {
+        if (prob[i] !== 0) {
+            prob[i]++;
+            sum_zeros--;
+        }
+    }
+    return prob;
+}
+
+function update_map(cells, player, cell_styles, tower_styles) {
+    let edge = [[], [], [], []];
+    for (let i = 0; i < cells.length; i++) {
+        for (let j = 0; j < cells[i].length; j++) {
+            if (cells[i][j].state !== player.cell_style && cells[i][j].state !== player.tower_style)
+                continue;
+            if (i !== 0 && check_neighbours(cells, i, j, player, -1, 0, cell_styles, tower_styles)) {
+                edge[direction.UP].push([i - 1, j]);
+            }
+            if (i !== cells.length - 1 && check_neighbours(cells, i, j, player, 1, 0, cell_styles, tower_styles)) {
+                edge[direction.DOWN].push([i + 1, j]);
+            }
+            if (j !== 0 && check_neighbours(cells, i, j, player, 0, -1, cell_styles, tower_styles)) {
+                edge[direction.LEFT].push([i, j - 1]);
+            }
+            if (j !== cells[i].length - 1 && check_neighbours(cells, i, j, player, 0, 1, cell_styles, tower_styles)) {
+                edge[direction.RIGHT].push([i, j + 1]);
+            }
+        }
+    }
+    let prob = get_prob(edge, player);
+    let rnd = get_random_int_from_range(1, 100);
+    for (let i = 0; i < 4; i++) {
+        if (rnd <= prob[i]) {
+            let index = edge[i][get_random_int_from_range(0, edge[i].length - 1)];
+            let is_opponent_tower = tower_styles.has(cells[index[0]][index[1]].state);
+            if (cells[index[0]][index[1]].state === cell_types.FREE_TOWER
+                || is_opponent_tower) {
+                if (is_opponent_tower) {
+                    cells[index[0]][index[1]].player.tower_num--;
+                }
+                cells[index[0]][index[1]].state = player.tower_style;
+                cells[index[0]][index[1]].player = player;
+                player.tower_num++;
+                continue;
+            }
+            if (cells[index[0]][index[1]].state === cell_types.FREE
+                || cell_styles.has(cells[index[0]][index[1]].state)) {
+                cells[index[0]][index[1]].state = player.cell_style;
+                cells[index[0]][index[1]].player = player;
+                console.log("huj");
+            }
+            break;
+        } else {
+            rnd -= prob[i];
+        }
+    }
+}
+
+function update_points(player) {
+    player.points += player.tower_num;
+}
+
+function process_loss(cells, players) {
+    for (let player of players) {
+        if (player.tower_num === 0) {
+            for (let i = 0; i < cells.length; i++) {
+                for (let j = 0; j < cells[i].length; j++) {
+                    if (cells[i][j].state === player.tower_style)
+                        cells[i][j].state = cell_types.FREE_TOWER;
+                    else if (cells[i][j].state === player.cell_style)
+                        cells[i][j].state = cell_types.FREE;
+                }
+            }
+        }
+    }
+
+}
+
+function game_handler(cells, tick, players, cell_styles, tower_styles) {
+    for (let k = 0; k < players.length; k++) {
+        if (tick % (random_tick_speed + max_player_speed - players[k].speed) === 0) {
+            update_map(cells, players[k], cell_styles, tower_styles);
+            process_loss(cells, players);
+        }
+        if (tick % point_tick_speed === 0) {
+            update_points(players[k]);
+        }
+    }
+
+    let arr = [cell_types.P1, cell_types.P2];
+    // for (let i = 0; i < cells.length; i++) {
+    //     for (let j = 0; j < cells[i].length; j++) {
+    //         cells[i][j].state = arr[Math.trunc(Math.random() * 2)];
+    //     }
+    // }
+}
+
 function start_game() {
-    let cells = generate_table(20, 40);
+    let players = [
+        new Player(cell_types.P1, cell_types.P1_TOWER, "", 0, 0, direction.NONE),
+        new Player(cell_types.P2, cell_types.P2_TOWER, "", 0, 0, direction.NONE),
+        new Player(cell_types.P3, cell_types.P3_TOWER, "", 0, 0, direction.NONE),
+        new Player(cell_types.P4, cell_types.P4_TOWER, "", 0, 0, direction.NONE)];
+    let tower_styles = new Set();
+    let cell_styles = new Set();
+    for (let player of players) {
+        cell_styles.add(player.cell_style);
+        tower_styles.add(player.tower_style);
+    }
+    let cells = generate_table(field_height, field_width);
+    generate_map(cells, players);
+
+
     let tick = 0;
     let ident = setInterval(() => {
-        game_handler(cells, tick);
+        game_handler(cells, tick, players, cell_styles, tower_styles);
         tick = (tick + 1) % tps;
     }, 1000 / tps);
 

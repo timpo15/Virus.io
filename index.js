@@ -1,7 +1,7 @@
 import {Cell, cell_types} from "./cell.js";
 import {direction, Player} from "./player.js";
 
-const field_height = 30;
+const field_height = 20;
 const field_width = 40;
 const random_tick_speed = 1;
 const tps = 60;
@@ -292,7 +292,7 @@ function game_handler(cells, tick, players, cell_styles, tower_styles) {
 
 function start_game() {
     let players = [
-        new Player(cell_types.P1, cell_types.P1_TOWER, "", 0, 0, direction.NONE),
+        new Player(cell_types.P1, cell_types.P1_TOWER, "", 0, 1, direction.NONE),
         new Player(cell_types.P2, cell_types.P2_TOWER, "", 0, 0, direction.NONE),
         new Player(cell_types.P3, cell_types.P3_TOWER, "", 0, 0, direction.NONE),
         new Player(cell_types.P4, cell_types.P4_TOWER, "", 0, 0, direction.NONE)];

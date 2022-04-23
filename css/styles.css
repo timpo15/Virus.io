@@ -179,30 +179,52 @@ td {
     align-items: center;
 }
 
-.free_cell {
+td {
+    width: 20px;
+    height: 20px;
+}
 
+.free_cell {
+    background: white;
 }
 
 .wall_cell {
-
+    background: black;
 }
 
 .free_tower_cell {
-
+    background: gray;
 }
 
 .p1_cell {
     background: blue;
 }
 
+.p1_tower_cell {
+    background: darkblue;
+}
+
 .p2_cell {
     background: yellow;
 }
 
-.p1_tower_cell {
-
-}
-
 .p2_tower_cell {
-
+    background: darkgoldenrod;
 }
+
+.p3_cell {
+    background: green;
+}
+
+.p3_tower_cell {
+    background: darkgreen;
+}
+
+.p4_cell {
+    background: red;
+}
+
+.p4_tower_cell {
+    background: darkred;
+}
+

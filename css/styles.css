@@ -228,3 +228,16 @@ td {
     background: darkred;
 }
 
+#move-none {
+    display: block;
+    border: none;
+    background-color: #A7DBE2;
+    margin: auto;
+    width: 80%;
+    height: 18px;
+}
+
+#move-none.arrow-active {
+    background-color: #178C9D;
+    background-image: none;
+}

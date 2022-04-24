@@ -47,3 +47,32 @@ td {
     background: darkred;
 }
 
+#move-down, #move-left, #move-right, #move-up {
+    background-color: transparent;
+    border: none;
+    vertical-align: middle;
+}
+
+.arrow-active.arrow-active {
+    background-image: url("img/arrow-active.svg");
+}
+
+.arrow {
+    height: 100%;
+    background-image: url("img/arrow.svg");
+    background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+#move-up {
+    transform: rotate(-90deg);
+}
+
+#move-down {
+    transform: rotate(90deg);
+}
+
+#move-left {
+    transform: rotate(180deg);
+}

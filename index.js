@@ -1,12 +1,13 @@
 import {Cell, cell_types} from "./cell.js";
 import {direction, Player} from "./player.js";
 
-const field_height = 20;
-const field_width = 40;
+const field_height = 22;
+const field_width = 54;
 const random_tick_speed = 1;
 const tps = 60;
 const point_tick_speed = 60;
-const max_player_speed = 1;
+const max_player_speed = 20;
+let player = undefined;
 
 function generate_table(n, m) {
     let cells = new Array(n);
@@ -82,6 +83,58 @@ function generate_landscape_on_rectangle(cells, i_min, j_min, i_max, j_max) {
     add_object(cells, i_min, j_min, i_max, j_max, cell_types.FREE_TOWER);
     if (i_max - i_min + 1 >= 10 && j_max - j_min + 1 >= 10) {
         generate_wall_on_rectangle(cells, i_min, j_min, i_max, j_max);
+    }
+}
+
+function check_tower_connectivity_and_fill_holes(cells, tower_styles) {
+    let towers_number = 0;
+    let any_tower = undefined;
+    for (let i = 0; i < cells.length; i++) {
+        for (let j = 0; j < cells[i].length; j++) {
+            if (cells[i][j].state === cell_types.FREE_TOWER || tower_styles.has(cells[i][j].state)) {
+                towers_number++;
+                any_tower = [i, j];
+            }
+        }
+    }
+    if (any_tower === undefined) {
+        return true;
+    }
+    const di = [-1, 0, 1, 0];
+    const dj = [0, -1, 0, 1];
+    let stack = [any_tower];
+    let used = new Set();
+    used.add(any_tower[0] * cells[0].length + any_tower[1]);
+    let visited_towers = 0;
+    while (stack.length > 0) {
+        let [i, j] = stack.pop();
+        if (cells[i][j].state === cell_types.FREE_TOWER || tower_styles.has(cells[i][j].state)) {
+            visited_towers++;
+        }
+        for (let k = 0; k < 4; k++) {
+            let new_i = i + di[k];
+            let new_j = j + dj[k];
+            if (new_i >= 0 && new_j >= 0 && new_i < cells.length && new_j < cells[0].length && cells[new_i][new_j].state !== cell_types.WALL && !used.has(new_i * cells[0].length + new_j)) {
+                used.add(new_i * cells[0].length + new_j);
+                stack.push([new_i, new_j]);
+            }
+        }
+    }
+    for (let i = 0; i < cells.length; i++) {
+        for (let j = 0; j < cells[i].length; j++) {
+            if (cells[i][j].state !== cell_types.WALL && !used.has(i * cells[0].length + j)) {
+                cells[i][j].state = cell_types.WALL;
+            }
+        }
+    }
+    return visited_towers === towers_number;
+}
+
+function clear_map(cells) {
+    for (let i = 0; i < cells.length; i++) {
+        for (let j = 0; j < cells[i].length; j++) {
+            cells[i][j].state = cell_types.FREE;
+        }
     }
 }
 
@@ -251,8 +304,10 @@ function update_map(cells, player, cell_styles, tower_styles) {
     }
 }
 
-function update_points(player) {
-    player.points += player.tower_num;
+function update_points(player_) {
+    if(player === player_)
+        document.querySelector('#player-score > span').textContent = player.points;
+    player_.points += player_.tower_num;
 }
 
 function process_loss(cells, players) {
@@ -292,10 +347,11 @@ function game_handler(cells, tick, players, cell_styles, tower_styles) {
 
 function start_game() {
     let players = [
-        new Player(cell_types.P1, cell_types.P1_TOWER, "", 0, 1, direction.NONE),
-        new Player(cell_types.P2, cell_types.P2_TOWER, "", 0, 0, direction.NONE),
+        new Player(cell_types.P1, cell_types.P1_TOWER, "", 0, 0, direction.UP),
+        new Player(cell_types.P2, cell_types.P2_TOWER, "", 0, 0, direction.DOWN),
         new Player(cell_types.P3, cell_types.P3_TOWER, "", 0, 0, direction.NONE),
         new Player(cell_types.P4, cell_types.P4_TOWER, "", 0, 0, direction.NONE)];
+    player = players[0];
     let tower_styles = new Set();
     let cell_styles = new Set();
     for (let player of players) {
@@ -303,7 +359,11 @@ function start_game() {
         tower_styles.add(player.tower_style);
     }
     let cells = generate_table(field_height, field_width);
-    generate_map(cells, players);
+    do {
+        clear_map(cells);
+        generate_map(cells, players);
+    }
+    while (!check_tower_connectivity_and_fill_holes(cells, tower_styles));
 
 
     let tick = 0;
@@ -313,5 +373,77 @@ function start_game() {
     }, 1000 / tps);
 
 }
+
+window.addEventListener('keydown', function(e) {
+    if (e.key.toLowerCase() === "w")
+        document.querySelector('#move-up').click();
+    else if (e.key.toLowerCase() === "s")
+        document.querySelector('#move-down').click();
+    else if (e.key.toLowerCase() === "a")
+        document.querySelector('#move-left').click();
+    else if (e.key.toLowerCase() === "d")
+        document.querySelector('#move-right').click();
+    else if (e.key.toLowerCase() === " ")
+        document.querySelector('#move-none').click();
+});
+
+let buttons = {
+    'up': document.querySelector('#move-up'),
+    'down': document.querySelector('#move-down'),
+    'left': document.querySelector('#move-left'),
+    'right': document.querySelector('#move-right'),
+    'none': document.querySelector('#move-none')
+}
+
+function selectButton(name) {
+    for(const key in buttons) {
+        buttons[key].classList.remove('arrow-active');
+    }
+    buttons[name].classList.add('arrow-active');
+}
+
+buttons['up'].addEventListener('click', (e) => {
+    player.direction = direction.UP;
+    selectButton('up');
+});
+
+buttons['down'].addEventListener('click', () => {
+    player.direction = direction.DOWN;
+    selectButton('down');
+});
+
+buttons['left'].addEventListener('click', () => {
+    player.direction = direction.LEFT;
+    selectButton('left');
+});
+
+buttons['right'].addEventListener('click', () => {
+    player.direction = direction.RIGHT;
+    selectButton('right');
+});
+
+buttons['none'].addEventListener('click', () => {
+    player.direction = direction.NONE;
+    selectButton('none');
+});
+
+document.querySelector('#speed').addEventListener('click', () => {
+    if (player.speed === max_player_speed)
+        return;
+
+    if (player.points > 0) {
+        player.speed++;
+        player.points--;
+        document.querySelector('#speed > span').textContent = player.speed.toString();
+    }
+});
+
+document.querySelector('#power').addEventListener('click', () => {
+    if (player.points > 0) {
+        player.strength++;
+        player.points--;
+        document.querySelector('#power > span').textContent = player.strength.toString();
+    }
+});
 
 start_game();

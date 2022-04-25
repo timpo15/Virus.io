@@ -51,6 +51,7 @@ td {
     background-color: transparent;
     border: none;
     vertical-align: middle;
+    cursor: pointer;
 }
 
 .arrow-active.arrow-active {
@@ -75,4 +76,12 @@ td {
 
 #move-left {
     transform: rotate(180deg);
+}
+
+#speed {
+    cursor: pointer;
+}
+
+#power {
+    cursor: pointer;
 }

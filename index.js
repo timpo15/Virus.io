@@ -2,16 +2,15 @@ import {Cell, cell_types} from "./cell.js";
 import {direction, Player} from "./player.js";
 
 const field_height = 22;
-const field_width = 54;
-const random_tick_speed = 1;
+const field_width = 25;
+const random_tick_speed = 20;
 const tps = 60;
-const point_tick_speed = 60;
-const max_player_speed = 20;
+const point_tick_speed = 20 * 60;
+const max_player_speed = 50;
 let player = undefined;
 
 function generate_table(n, m) {
     let cells = new Array(n);
-
     let tblBody = document.querySelector("#game-field");
 
     for (let i = 0; i < n; i++) {
@@ -305,8 +304,6 @@ function update_map(cells, player, cell_styles, tower_styles) {
 }
 
 function update_points(player_) {
-    if(player === player_)
-        document.querySelector('#player-score > span').textContent = player.points;
     player_.points += player_.tower_num;
 }
 
@@ -327,6 +324,7 @@ function process_loss(cells, players) {
 }
 
 function game_handler(cells, tick, players, cell_styles, tower_styles) {
+    document.querySelector('#player-score > span').textContent = player.points;
     for (let k = 0; k < players.length; k++) {
         if (tick % (random_tick_speed + max_player_speed - players[k].speed) === 0) {
             update_map(cells, players[k], cell_styles, tower_styles);
@@ -369,7 +367,7 @@ function start_game() {
     let tick = 0;
     let ident = setInterval(() => {
         game_handler(cells, tick, players, cell_styles, tower_styles);
-        tick = (tick + 1) % tps;
+        tick = (tick + 1);
     }, 1000 / tps);
 
 }
@@ -444,6 +442,10 @@ document.querySelector('#power').addEventListener('click', () => {
         player.points--;
         document.querySelector('#power > span').textContent = player.strength.toString();
     }
+});
+
+document.querySelector('.give-up').addEventListener('click', () => {
+    document.querySelector('body').style.background = 'linear-gradient(to bottom, blue 50%, yellow 50%)';
 });
 
 start_game();

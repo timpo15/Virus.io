@@ -13,7 +13,7 @@
 }
 
 body {
-    background-color: #B9F0F8;
+    background: #B9F0F8;
 }
 
 .hidden.hidden {
@@ -37,8 +37,12 @@ body {
 
 .game-window {
     width: 100%;
-    background-color: #EEFDFF;
     height: 70vh;
+}
+
+.game-window > table {
+    background-color: #EEFDFF;
+    padding: 20px;
     border-radius: 40px;
 }
 
@@ -130,6 +134,14 @@ td {
     height: 50px;
     border-width: 2px;
     border-color: #6896f8;
+}
+
+.ui-button:hover {
+    background: linear-gradient(to bottom, #6AAEFF 50%, #FEFFB5 50%);
+}
+
+.ui-button:active {
+    background: linear-gradient(to bottom, blue 50%, yellow 50%);
 }
 
 .buttons-upgrade, .button-give-up {
@@ -235,6 +247,7 @@ td {
     margin: auto;
     width: 80%;
     height: 18px;
+    cursor: pointer;
 }
 
 #move-none.arrow-active {

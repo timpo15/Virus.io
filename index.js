@@ -210,15 +210,16 @@ function generate_map(cells, players) {
     }
 }
 
-function check_neighbours(cells, i, j, player, dir_i, dir_j, cell_styles, tower_styles) {
+function check_neighbours(cells, i, j, player_, dir_i, dir_j, cell_styles, tower_styles) {
+    let prob = Math.random();
     let f = cells[i + dir_i][j + dir_j].state === cell_types.FREE
         || cells[i + dir_i][j + dir_j].state === cell_types.FREE_TOWER;
     f |= cell_styles.has(cells[i + dir_i][j + dir_j].state)
-        && cells[i + dir_i][j + dir_j].state !== player.cell_style
-        && cells[i + dir_i][j + dir_j].player.strength <= player.strength;
+        && cells[i + dir_i][j + dir_j].state !== player_.cell_style
+        && prob < player_.strength / (player_.strength + cells[i + dir_i][j + dir_j].player.strength);
     f |= tower_styles.has(cells[i + dir_i][j + dir_j].state)
-        && cells[i + dir_i][j + dir_j].state !== player.tower_style
-        && cells[i + dir_i][j + dir_j].player.strength <= player.strength;
+        && cells[i + dir_i][j + dir_j].state !== player_.tower_style
+        && prob < player_.strength / (player_.strength + cells[i + dir_i][j + dir_j].player.strength);
     return f;
 }
 
@@ -305,6 +306,12 @@ function update_map(cells, player, cell_styles, tower_styles) {
 
 function update_points(player_) {
     player_.points += player_.tower_num;
+    if (player_ !== player) { //TODO: БАБКА ЛЮТАЯ(исправить)
+        let points_to_speed = Math.min(max_player_speed, get_random_int_from_range(0, player_.points));
+        player_.strength += player_.points - points_to_speed;
+        player_.strength += points_to_speed;
+        player_.points = 0;
+    }
 }
 
 function process_loss(cells, players) {
@@ -443,9 +450,19 @@ document.querySelector('#power').addEventListener('click', () => {
         document.querySelector('#power > span').textContent = player.strength.toString();
     }
 });
-
-document.querySelector('.give-up').addEventListener('click', () => {
-    document.querySelector('body').style.background = 'linear-gradient(to bottom, blue 50%, yellow 50%)';
-});
+//
+// let ukraine = false;
+// document.querySelector('.give-up').addEventListener('click', () => {
+//     let b = document.querySelector('body');
+//     if (ukraine){
+//         b.style.background = 'linear-gradient(to bottom, white 30%, blue 33% 66%, red 66% 100%)';
+//         ukraine = false;
+//
+//     }
+//     else {
+//         b.style.background = 'linear-gradient(to bottom, #6AAEFF 50%, #FEFFB5 50%)';
+//         ukraine = true;
+//     }
+// });
 
 start_game();

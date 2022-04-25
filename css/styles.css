@@ -137,11 +137,13 @@ td {
 }
 
 .ui-button:hover {
-    background: linear-gradient(to bottom, #6AAEFF 50%, #FEFFB5 50%);
+    background: #c1f7ff;
+    /*background: linear-gradient(to bottom, #6AAEFF 50%, #FEFFB5 50%);*/
 }
 
 .ui-button:active {
-    background: linear-gradient(to bottom, blue 50%, yellow 50%);
+    background: #87f1ff;
+    /*background: linear-gradient(to bottom, white 30%, blue 33% 66%, red 66% 100%);*/
 }
 
 .buttons-upgrade, .button-give-up {
@@ -163,10 +165,10 @@ td {
     border: 2px solid #6896f8;
     border-top-right-radius: 30px;
     border-top-left-radius: 30px;
-    font-weight: 500;
+    font-weight: 700;
     font-size: 20px;
     line-height: 25px;
-    color: #778697;
+    color: blue;
 }
 
 .captured-table {

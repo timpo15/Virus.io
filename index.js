@@ -469,9 +469,6 @@ document.querySelector('#power').addEventListener('click', () => {
 //     }
 // });
 
-start_game();
-
-
 const modal = document.getElementById("modal");
 const btn = document.getElementById("power");
 const span = document.getElementById("restart");
@@ -491,3 +488,19 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
+
+document.querySelector("#play").addEventListener("click", () => {
+   const nameInput = document.querySelector("#nickname");
+   if (nameInput.value.length === 0){
+       alert("Введите имя");
+       return;
+   }
+   if (nameInput.value.length > 15){
+       alert("Слишком длинное имя");
+       return;
+   }
+   document.querySelector(".player1_captured .nick").textContent = nameInput.value;
+   document.querySelector(".main").classList.add("hidden");
+   document.querySelector(".game").classList.remove("hidden");
+   start_game();
+});

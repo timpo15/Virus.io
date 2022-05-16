@@ -79,18 +79,32 @@ body {
     background-color: #EDF7FA;
     text-align: center;
     color: #174b4f;
+    box-shadow: 1px 1px 0.5px rgba(0,0,0,0.2);
 }
 
 .menu_list {
-    background-color: #B9F0F8;
+    background-color: #EEFDFF;
     height: 50px;
-    border: 1px solid #A3A3A3;
-    border-radius: 40px;
+    border-radius: 20px;
     font-style: normal;
     font-weight: 500;
     font-size: 20px;
     line-height: 32px;
-    color: #FAFEFE;
+    color: #174b4f;
+    border-width: 2px;
+    border-color: #6896f8;
+    box-shadow: 1px 1px 0.5px rgba(0,0,0,0.2);
+
+
+    /*margin: 10px auto;*/
+}
+
+.menu_list:hover {
+    background: #c1f7ff;
+}
+
+.menu_list:active {
+    background: #87f1ff;
 }
 
 td {
@@ -100,7 +114,7 @@ td {
 }
 
 .game-controls {
-    max-width: 300px;
+    width: 210px;
     height: 80%;
     display: flex;
     justify-content: space-around;
@@ -141,7 +155,7 @@ td {
 
 .give-up.give-up {
     background: #EEFDFF;
-    width: 200px;
+    width: 210px;
     height: 50px;
     border-radius: 20px;
 }
@@ -163,7 +177,7 @@ td {
 }
 
 .statistics {
-    width: 200px;
+    width: 210px;
     text-align: center;
 }
 
@@ -188,7 +202,7 @@ td {
     border-bottom-left-radius: 30px;
     border-top: none;
     font-weight: 600;
-    font-size: 20px;
+    font-size: 17px;
     line-height: 25px;
     font-family: sans-serif;
     display: flex;
@@ -199,8 +213,8 @@ td {
 .captured_score {
     width: 100%;
     margin-bottom: 5px;
-    padding-left: 13px;
-    padding-right: 13px;
+    padding-left: 11px;
+    padding-right: 11px;
 }
 
 .captured_score:nth-child(1) {

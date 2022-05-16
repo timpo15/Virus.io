@@ -466,3 +466,26 @@ document.querySelector('#power').addEventListener('click', () => {
 // });
 
 start_game();
+
+
+var modal = document.getElementById("modal");
+
+var btn = document.getElementById("power");
+
+var span = document.getElementById("restart");
+
+
+btn.onclick = function(e) {
+    modal.style.display = "block";
+    e.preventDefault();
+}
+
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}

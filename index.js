@@ -1,8 +1,8 @@
 import {Cell, cell_types} from "./cell.js";
 import {direction, Player} from "./player.js";
 
-const field_height = 22;
-const field_width = 25;
+const field_height = 30;
+const field_width = 30;
 const random_tick_speed = 20;
 const tps = 60;
 const point_tick_speed = 20 * 60;
@@ -390,6 +390,10 @@ window.addEventListener('keydown', function(e) {
         document.querySelector('#move-right').click();
     else if (e.key.toLowerCase() === " ")
         document.querySelector('#move-none').click();
+    else if (e.key.toLowerCase() === "q")
+        document.querySelector('#speed').click();
+    else if (e.key.toLowerCase() === "e")
+        document.querySelector('#power').click();
 });
 
 let buttons = {
@@ -468,11 +472,9 @@ document.querySelector('#power').addEventListener('click', () => {
 start_game();
 
 
-var modal = document.getElementById("modal");
-
-var btn = document.getElementById("power");
-
-var span = document.getElementById("restart");
+const modal = document.getElementById("modal");
+const btn = document.getElementById("power");
+const span = document.getElementById("restart");
 
 
 btn.onclick = function(e) {
@@ -485,7 +487,7 @@ span.onclick = function() {
 }
 
 window.onclick = function(event) {
-    if (event.target == modal) {
+    if (event.target === modal) {
         modal.style.display = "none";
     }
 }

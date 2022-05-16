@@ -146,3 +146,19 @@ td {
     text-decoration: none;
     cursor: pointer;
 }
+
+.player1_captured {
+    color: blue;
+}
+
+.player2_captured {
+    color: #ffea00;
+}
+
+.player3_captured {
+    color: green;
+}
+
+.player4_captured {
+    color: red;
+}

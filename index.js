@@ -474,20 +474,20 @@ const btn = document.getElementById("power");
 const span = document.getElementById("restart");
 
 
-btn.onclick = function(e) {
-    modal.style.display = "block";
-    e.preventDefault();
-}
-
-span.onclick = function() {
-    modal.style.display = "none";
-}
-
-window.onclick = function(event) {
-    if (event.target === modal) {
-        modal.style.display = "none";
-    }
-}
+// btn.onclick = function(e) {
+//     modal.style.display = "block";
+//     e.preventDefault();
+// }
+//
+// span.onclick = function() {
+//     modal.style.display = "none";
+// }
+//
+// window.onclick = function(event) {
+//     if (event.target === modal) {
+//         modal.style.display = "none";
+//     }
+// }
 
 document.querySelector("#play").addEventListener("click", () => {
    const nameInput = document.querySelector("#nickname");

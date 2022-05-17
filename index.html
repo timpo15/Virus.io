@@ -10,22 +10,82 @@
 </head>
 <body>
 
-<section class="main hidden">
+<section class="main">
     <div class="container">
         <div class="center-element">
             <div class="menu">
                 <h1 class="logo">Virus.io</h1>
                 <input type="text" name="nickname" id="nickname" placeholder="Enter name" class="menu_list">
-                <button class="menu_list">Play</button>
+                <button id="play" class="menu_list">Play</button>
                 <button class="menu_list">Rules</button>
             </div>
         </div>
     </div>
 </section>
 
-<section class="game">
+<section class="game hidden">
     <div class="container">
         <div class="game-flex">
+            <div class="game-controls">
+
+                <div class="statistics">
+                    <div class="stat-head">Captured</div>
+                    <div class="captured-table">
+                        <div class="player1_captured captured_score">
+                            <span class="nick">Player</span>: <span class="score">228</span>
+                        </div>
+                        <div class="player2_captured captured_score">
+                            <span class="nick">Bot 1</span>: <span class="score">228</span>
+                        </div>
+                        <div class="player3_captured captured_score">
+                            <span class="nick">Bot 2</span>: <span class="score">228</span>
+                        </div>
+                        <div class="player4_captured captured_score">
+                            <span class="nick">Bot 3</span>: <span class="score">228</span>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="moves">
+                    <tr>
+                        <td></td>
+                        <td>
+                            <button id="move-up" class="arrow"></button>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button id="move-left" class="arrow"></button>
+                        </td>
+                        <td>
+                            <button id="move-none" class="arrow-active"></button>
+                        </td>
+                        <td>
+                            <button id="move-right" class="arrow"></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <button id="move-down" class="arrow"></button>
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+                <div class="statistics">
+                    <div id="player-score" class="stat-head">Points: <span>0</span></div>
+                    <div class="buttons-upgrade captured-table">
+                        <button id="speed" class="ui-button">Speed: <span>0</span></button>
+                        <button id="power" class="ui-button">Power: <span>0</span></button>
+                    </div>
+                </div>
+
+
+                <div class="button-give-up">
+                    <button class="give-up ui-button">Give up</button>
+                </div>
+            </div>
             <div class="game-window">
                 <table>
                     <tbody id="game-field" border="1">
@@ -33,46 +93,24 @@
                     </tbody>
                 </table>
             </div>
-            <div class="game-controls">
-                <table class="moves">
-                    <tr>
-                        <td></td>
-                        <td><button id="move-up" class="arrow"></button></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td><button id="move-left" class="arrow"></button></td>
-                        <td><button id="move-none"></button></td>
-                        <td><button id="move-right" class="arrow"></button></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td><button id="move-down" class="arrow"></button></td>
-                        <td></td>
-                    </tr>
-                </table>
-
-                <div class="buttons-upgrade">
-                    <button id="speed" class="ui-button">Speed: <span>0</span></button>
-                    <button id="power" class="ui-button">Power: <span>0</span></button>
+        </div>
+    </div>
+    <div class="modal" id="modal">
+        <div class="modal-content" id="modal-content">
+            <div class="modal-text-box">
+                <div class="modal-text">
+                    Очень жаль {name}, но ты проиграл(
+                    Попробуй еще раз или смерись с поражением!
                 </div>
+            </div>
 
-                <div class="statistics">
-                    <div id="player-score">Points: <span>0</span></div>
-                    <div class="captured-table">
-                        <div class="player1">Captured: <span>22</span></div>
-                        <div class="player2">Captured: <span>8</span></div>
-                    </div>
-                </div>
-
-                <div class="button-give-up">
-                    <button class="give-up ui-button">Give up</button>
-                </div>
+            <div class="modal-buttons">
+                <button id="restart" class="modal-button">restart</button>
+                <button id="menu" class="modal-button">menu</button>
             </div>
         </div>
     </div>
 </section>
-
 
 
 <script src="index.js" type="module"></script>

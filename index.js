@@ -1,8 +1,8 @@
 import {Cell, cell_types} from "./cell.js";
 import {direction, Player} from "./player.js";
 
-const field_height = 22;
-const field_width = 25;
+const field_height = 30;
+const field_width = 30;
 const random_tick_speed = 20;
 const tps = 60;
 const point_tick_speed = 20 * 60;
@@ -309,7 +309,7 @@ function update_points(player_) {
     if (player_ !== player) { //TODO: БАБКА ЛЮТАЯ(исправить)
         let points_to_speed = Math.min(max_player_speed, get_random_int_from_range(0, player_.points));
         player_.strength += player_.points - points_to_speed;
-        player_.strength += points_to_speed;
+        player_.speed += points_to_speed;
         player_.points = 0;
     }
 }
@@ -352,10 +352,10 @@ function game_handler(cells, tick, players, cell_styles, tower_styles) {
 
 function start_game() {
     let players = [
-        new Player(cell_types.P1, cell_types.P1_TOWER, "", 0, 0, direction.UP),
-        new Player(cell_types.P2, cell_types.P2_TOWER, "", 0, 0, direction.DOWN),
-        new Player(cell_types.P3, cell_types.P3_TOWER, "", 0, 0, direction.NONE),
-        new Player(cell_types.P4, cell_types.P4_TOWER, "", 0, 0, direction.NONE)];
+        new Player(cell_types.P1, cell_types.P1_TOWER, "P1", 0, 0, direction.UP),
+        new Player(cell_types.P2, cell_types.P2_TOWER, "P2", 0, 0, direction.DOWN),
+        new Player(cell_types.P3, cell_types.P3_TOWER, "P3", 0, 0, direction.NONE),
+        new Player(cell_types.P4, cell_types.P4_TOWER, "P4", 0, 0, direction.NONE)];
     player = players[0];
     let tower_styles = new Set();
     let cell_styles = new Set();
@@ -390,6 +390,10 @@ window.addEventListener('keydown', function(e) {
         document.querySelector('#move-right').click();
     else if (e.key.toLowerCase() === " ")
         document.querySelector('#move-none').click();
+    else if (e.key.toLowerCase() === "q")
+        document.querySelector('#speed').click();
+    else if (e.key.toLowerCase() === "e")
+        document.querySelector('#power').click();
 });
 
 let buttons = {
@@ -465,4 +469,38 @@ document.querySelector('#power').addEventListener('click', () => {
 //     }
 // });
 
-start_game();
+const modal = document.getElementById("modal");
+const btn = document.getElementById("power");
+const span = document.getElementById("restart");
+
+
+// btn.onclick = function(e) {
+//     modal.style.display = "block";
+//     e.preventDefault();
+// }
+//
+// span.onclick = function() {
+//     modal.style.display = "none";
+// }
+//
+// window.onclick = function(event) {
+//     if (event.target === modal) {
+//         modal.style.display = "none";
+//     }
+// }
+
+document.querySelector("#play").addEventListener("click", () => {
+   const nameInput = document.querySelector("#nickname");
+   if (nameInput.value.length === 0){
+       alert("Введите имя");
+       return;
+   }
+   if (nameInput.value.length > 15){
+       alert("Слишком длинное имя");
+       return;
+   }
+   document.querySelector(".player1_captured .nick").textContent = nameInput.value;
+   document.querySelector(".main").classList.add("hidden");
+   document.querySelector(".game").classList.remove("hidden");
+   start_game();
+});

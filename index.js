@@ -5,13 +5,26 @@ import {game_handler, field_height, field_width, tps, max_player_speed} from "./
 
 export let player = undefined;
 
-function start_game() {
+function print_player_names(players) {
+    for (let i = 0; i < players.length; i++) {
+        document.querySelector(`.player${i + 1}_captured .nick`).textContent = players[i].name;
+    }
+}
+
+export function print_captured(captured) {
+    for (let i = 0; i < captured.length; i++) {
+        document.querySelector(`.player${i + 1}_captured .score`).textContent = captured[i];
+    }
+}
+
+function start_game(player_name) {
     let players = [
-        new Player(cell_types.P1, cell_types.P1_TOWER, "P1", 0, 0, direction.UP),
-        new Player(cell_types.P2, cell_types.P2_TOWER, "P2", 0, 0, direction.DOWN),
-        new Player(cell_types.P3, cell_types.P3_TOWER, "P3", 0, 0, direction.NONE),
-        new Player(cell_types.P4, cell_types.P4_TOWER, "P4", 0, 0, direction.NONE)];
+        new Player(cell_types.P1, cell_types.P1_TOWER, player_name, 0, 0, direction.NONE),
+        new Player(cell_types.P2, cell_types.P2_TOWER, "enemy_1", 0, 0, direction.DOWN),
+        new Player(cell_types.P3, cell_types.P3_TOWER, "enemy_2", 0, 0, direction.NONE),
+        new Player(cell_types.P4, cell_types.P4_TOWER, "enemy_3", 0, 0, direction.NONE)];
     player = players[0];
+    print_player_names(players);
     let tower_styles = new Set();
     let cell_styles = new Set();
     for (let player of players) {
@@ -77,10 +90,9 @@ document.querySelector("#play").addEventListener("click", () => {
        alert("Слишком длинное имя");
        return;
    }
-   document.querySelector(".player1_captured .nick").textContent = nameInput.value;
    document.querySelector(".main").classList.add("hidden");
    document.querySelector(".game").classList.remove("hidden");
-   start_game();
+   start_game(nameInput.value);
 });
 
 window.addEventListener('keydown', function(e) {

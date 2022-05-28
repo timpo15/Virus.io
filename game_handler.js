@@ -1,7 +1,7 @@
 import {cell_types} from "./cell.js";
 import {direction} from "./player.js";
 import {get_random_int_from_range} from "./utilities.js";
-import {player} from "./index.js";
+import {player, print_captured} from "./index.js";
 
 export const field_height = 30;
 export const field_width = 30;
@@ -106,7 +106,7 @@ function update_map(cells, player, cell_styles, tower_styles) {
 function update_points(player_) {
     player_.points += player_.tower_num;
     if (player_ !== player) { //TODO: БАБКА ЛЮТАЯ(исправить)
-        let points_to_speed = Math.min(max_player_speed, get_random_int_from_range(0, player_.points));
+        let points_to_speed = Math.min(max_player_speed - player_.speed, get_random_int_from_range(0, player_.points));
         player_.strength += player_.points - points_to_speed;
         player_.speed += points_to_speed;
         player_.points = 0;
@@ -135,11 +135,13 @@ function process_loss(cells, players) {
 
 function do_smth_when_only_one_left() {
     ;
+    //TODO: Саня ты в порядке
 }
 
 
 export function game_handler(cells, tick, players, cell_styles, tower_styles) {
     document.querySelector('#player-score > span').textContent = player.points;
+    let captured = [];
     for (let k = 0; k < players.length; k++) {
         if (tick % (random_tick_speed + max_player_speed - players[k].speed) === 0) {
             // console.log(k + " " + (random_tick_speed + max_player_speed - players[k].speed));
@@ -149,6 +151,14 @@ export function game_handler(cells, tick, players, cell_styles, tower_styles) {
         if (tick % point_tick_speed === 0) {
             update_points(players[k]);
         }
+        captured.push(0);
+        for (let i = 0; i < cells.length; i++) {
+            for (let j = 0; j < cells[i].length; j++) {
+                if (cells[i][j].player === players[k]) {
+                    captured[k]++;
+                }
+            }
+        }
     }
-
+    print_captured(captured);
 }

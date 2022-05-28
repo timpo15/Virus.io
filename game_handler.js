@@ -120,10 +120,14 @@ function process_loss(cells, players) {
             cnt++;
             for (let i = 0; i < cells.length; i++) {
                 for (let j = 0; j < cells[i].length; j++) {
-                    if (cells[i][j].state === player.tower_style)
+                    if (cells[i][j].state === player.tower_style) {
                         cells[i][j].state = cell_types.FREE_TOWER;
-                    else if (cells[i][j].state === player.cell_style)
+                        cells[i][j].player = undefined;
+                    }
+                    else if (cells[i][j].state === player.cell_style) {
                         cells[i][j].state = cell_types.FREE;
+                        cells[i][j].player = undefined;
+                    }
                 }
             }
         }
@@ -144,7 +148,7 @@ export function game_handler(cells, tick, players, cell_styles, tower_styles) {
     let captured = [];
     for (let k = 0; k < players.length; k++) {
         if (tick % (random_tick_speed + max_player_speed - players[k].speed) === 0) {
-            // console.log(k + " " + (random_tick_speed + max_player_speed - players[k].speed));
+            console.log(players[k].name + " " + players[k].speed + " " + players[k].strength);
             update_map(cells, players[k], cell_styles, tower_styles);
             process_loss(cells, players);
         }

@@ -88,7 +88,6 @@ document.querySelector("#rules").addEventListener("click", () => {
 
 document.querySelector("#menu").addEventListener("click", () => {
     document.querySelector(".modal_window").classList.add("hidden");
-    document.querySelector("#modal-text").innerText="Вы проиграли, вы лох";
     clearInterval(game_handler_event);
     document.querySelector(".game").classList.add("hidden");
     document.querySelector(".main").classList.remove("hidden");
@@ -110,6 +109,7 @@ document.querySelector("#play").addEventListener("click", () => {
 });
 
 document.querySelector("#give-up").addEventListener("click", () => {
+    document.querySelector("#modal-text").innerText = "Вы проиграли, вы лох";
     document.querySelector(".modal_window").classList.remove("hidden");
 });
 

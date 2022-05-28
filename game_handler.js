@@ -114,31 +114,48 @@ function update_points(player_) {
 }
 
 function process_loss(cells, players) {
-    let cnt = 0;
-    for (let player of players) {
-        if (player.tower_num === 0) {
-            cnt++;
+    let alive = [];
+    for (let i = 0; i < players.length; i++) {
+        if (players[i].tower_num === 0) {
             for (let i = 0; i < cells.length; i++) {
                 for (let j = 0; j < cells[i].length; j++) {
-                    if (cells[i][j].state === player.tower_style) {
+                    if (cells[i][j].state === players[i].tower_style) {
                         cells[i][j].state = cell_types.FREE_TOWER;
                         cells[i][j].player = undefined;
                     }
-                    else if (cells[i][j].state === player.cell_style) {
+                    else if (cells[i][j].state === players[i].cell_style) {
                         cells[i][j].state = cell_types.FREE;
                         cells[i][j].player = undefined;
                     }
                 }
             }
+            if (i === 0) {
+
+            }
+        }
+        else {
+            alive.push(i);
         }
     }
-    if (players.length - cnt === 1) {
-        do_smth_when_only_one_left();
+    if (alive.length === 1) {
+        do_smth_when_only_one_left(players, alive[0]);
     }
 }
 
-function do_smth_when_only_one_left() {
-    ;
+function handle_player_loss() {
+    document.querySelector("#modal-text").innerText = "Вы проиграли, вы лох";
+    document.querySelector(".modal_window").classList.remove("hidden");
+}
+
+function handle_player_win() {
+    document.querySelector("#modal-text").innerText = "Вы выиграли, но все равно вы лох";
+    document.querySelector(".modal_window").classList.remove("hidden");
+}
+
+function do_smth_when_only_one_left(players, id) {
+    if (id === 0) {
+        handle_player_win();
+    }
     //TODO: Саня ты в порядке
 }
 

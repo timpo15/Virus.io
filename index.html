@@ -17,7 +17,7 @@
                 <h1 class="logo">Virus.io</h1>
                 <input type="text" name="nickname" id="nickname" placeholder="Enter name" class="menu_list">
                 <button id="play" class="menu_list">Play</button>
-                <button class="menu_list">Rules</button>
+                <button id="rules" class="menu_list">Rules</button>
             </div>
         </div>
     </div>
@@ -83,7 +83,7 @@
 
 
                 <div class="button-give-up">
-                    <button class="give-up ui-button">Give up</button>
+                    <button id="give-up" class="give-up ui-button">Give up</button>
                 </div>
             </div>
             <div class="game-window">
@@ -95,23 +95,26 @@
             </div>
         </div>
     </div>
-    <div class="modal" id="modal">
-        <div class="modal-content" id="modal-content">
-            <div class="modal-text-box">
-                <div class="modal-text">
-                    Очень жаль {name}, но ты проиграл(
-                    Попробуй еще раз или смерись с поражением!
-                </div>
-            </div>
+</section>
 
-            <div class="modal-buttons">
-                <button id="restart" class="modal-button">restart</button>
-                <button id="menu" class="modal-button">menu</button>
+<section class="modal_window hidden">
+    <div class="container">
+        <div class="modal" id="modal">
+            <div class="modal-content" id="modal-content">
+                <div class="modal-text-box">
+                    <div id="modal-text">
+
+                    </div>
+                </div>
+
+                <div class="modal-buttons">
+<!--                    <button id="restart" class="modal-button">restart</button>-->
+                    <button id="menu" class="modal-button">menu</button>
+                </div>
             </div>
         </div>
     </div>
 </section>
-
 
 <script src="index.js" type="module"></script>
 <link rel="stylesheet" href="styles.css">

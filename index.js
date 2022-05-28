@@ -4,6 +4,7 @@ import {generate_map, clear_map, check_tower_connectivity_and_fill_holes, genera
 import {game_handler, field_height, field_width, tps, max_player_speed} from "./game_handler.js";
 
 export let player = undefined;
+let game_handler_event = undefined;
 
 function print_player_names(players) {
     for (let i = 0; i < players.length; i++) {
@@ -39,7 +40,7 @@ function start_game(player_name) {
     while (!check_tower_connectivity_and_fill_holes(cells, tower_styles));
 
     let tick = 0;
-    let ident = setInterval(() => {
+    game_handler_event = setInterval(() => {
         game_handler(cells, tick, players, cell_styles, tower_styles);
         tick = (tick + 1);
     }, 1000 / tps);
@@ -80,6 +81,19 @@ const span = document.getElementById("restart");
 //     }
 // }
 
+document.querySelector("#rules").addEventListener("click", () => {
+    document.querySelector("#modal-text").innerText="Прошу отчислить по собственному желанию"
+    document.querySelector(".modal_window").classList.remove("hidden");
+});
+
+document.querySelector("#menu").addEventListener("click", () => {
+    document.querySelector(".modal_window").classList.add("hidden");
+    document.querySelector("#modal-text").innerText="Вы проиграли, вы лох";
+    clearInterval(game_handler_event);
+    document.querySelector(".game").classList.add("hidden");
+    document.querySelector(".main").classList.remove("hidden");
+});
+
 document.querySelector("#play").addEventListener("click", () => {
    const nameInput = document.querySelector("#nickname");
    if (nameInput.value.length === 0){
@@ -93,6 +107,10 @@ document.querySelector("#play").addEventListener("click", () => {
    document.querySelector(".main").classList.add("hidden");
    document.querySelector(".game").classList.remove("hidden");
    start_game(nameInput.value);
+});
+
+document.querySelector("#give-up").addEventListener("click", () => {
+    document.querySelector(".modal_window").classList.remove("hidden");
 });
 
 window.addEventListener('keydown', function(e) {

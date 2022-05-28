@@ -4,7 +4,7 @@ import {get_random_int_from_range} from "./utilities.js";
 export function generate_table(n, m) {
     let cells = new Array(n);
     let tblBody = document.querySelector("#game-field");
-
+    tblBody.innerHTML = "";
     for (let i = 0; i < n; i++) {
         cells[i] = new Array(m);
         let row = document.createElement("tr");

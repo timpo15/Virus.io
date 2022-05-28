@@ -1,4 +1,3 @@
-import {cell_types} from "./cell.js";
 
 export const direction = {
     NONE: -1,
@@ -19,8 +18,4 @@ export class Player {
         this.tower_num = 1;
         this.points = 0;
     }
-
-    // allocate_points() {
-    //     for_strength
-    // }
 }

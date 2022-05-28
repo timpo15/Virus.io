@@ -1,5 +1,25 @@
-import {cell_types} from "./cell.js";
+import {Cell, cell_types} from "./cell.js";
 import {get_random_int_from_range} from "./utilities.js";
+
+export function generate_table(n, m) {
+    let cells = new Array(n);
+    let tblBody = document.querySelector("#game-field");
+
+    for (let i = 0; i < n; i++) {
+        cells[i] = new Array(m);
+        let row = document.createElement("tr");
+        for (let j = 0; j < m; j++) {
+            let cell = document.createElement("td");
+            cells[i][j] = new Cell(cell, `${i} ${j}`);
+            cell.setAttribute("id", cells[i][j].id);
+            cell.setAttribute("class", cells[i][j].state);
+            row.appendChild(cell);
+        }
+        tblBody.appendChild(row);
+    }
+
+    return cells;
+}
 
 export function generate_map(cells, players) {
     let positions = [[4, 4], [cells.length - 5, cells[0].length - 5], [4, cells[0].length - 5], [cells.length - 5, 4]];

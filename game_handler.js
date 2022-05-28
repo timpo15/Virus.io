@@ -115,26 +115,26 @@ function update_points(player_) {
 
 function process_loss(cells, players) {
     let alive = [];
-    for (let i = 0; i < players.length; i++) {
-        if (players[i].tower_num === 0) {
+    for (let k = 0; k < players.length; k++) {
+        if (players[k].tower_num === 0) {
             for (let i = 0; i < cells.length; i++) {
                 for (let j = 0; j < cells[i].length; j++) {
-                    if (cells[i][j].state === players[i].tower_style) {
+                    if (cells[i][j].state === players[k].tower_style) {
                         cells[i][j].state = cell_types.FREE_TOWER;
                         cells[i][j].player = undefined;
                     }
-                    else if (cells[i][j].state === players[i].cell_style) {
+                    else if (cells[i][j].state === players[k].cell_style) {
                         cells[i][j].state = cell_types.FREE;
                         cells[i][j].player = undefined;
                     }
                 }
             }
-            if (i === 0) {
-
+            if (k === 0) {
+                handle_player_loss();
             }
         }
         else {
-            alive.push(i);
+            alive.push(k);
         }
     }
     if (alive.length === 1) {

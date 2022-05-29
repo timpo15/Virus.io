@@ -154,7 +154,6 @@ function handle_loss(players, id) {
 }
 
 export function game_handler(cells, tick, players, cell_styles, tower_styles) {
-    document.querySelector('#player-score > span').textContent = player.points;
     let captured = [];
     for (let k = 0; k < players.length; k++) {
         if (tick % (random_tick_speed + max_player_speed - players[k].speed) === 0) {

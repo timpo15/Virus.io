@@ -30,7 +30,7 @@ export function print_captured(captured) {
 
 function start_game(player_name) {
     let players = [
-        new Player(cell_types.P1, cell_types.P1_TOWER, player_name, 1488, 50, direction.NONE),
+        new Player(cell_types.P1, cell_types.P1_TOWER, player_name, 0, 0, direction.NONE),
         new Player(cell_types.P2, cell_types.P2_TOWER, "enemy_1", 0, 0, direction.DOWN),
         new Player(cell_types.P3, cell_types.P3_TOWER, "enemy_2", 0, 0, direction.NONE),
         new Player(cell_types.P4, cell_types.P4_TOWER, "enemy_3", 0, 0, direction.NONE)];

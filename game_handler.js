@@ -1,7 +1,7 @@
 import {cell_types} from "./cell.js";
 import {direction} from "./player.js";
 import {get_random_int_from_range, kukarek} from "./utilities.js";
-import {player, print_captured, handle_player_win, handle_player_loss} from "./index.js";
+import {player, print_captured, handle_player_win, handle_player_loss, print_points} from "./index.js";
 
 export const field_height = 30;
 export const field_width = 30;
@@ -154,6 +154,7 @@ function handle_loss(players, id) {
 }
 
 export function game_handler(cells, tick, players, cell_styles, tower_styles) {
+    print_points(player.points);
     let captured = [];
     for (let k = 0; k < players.length; k++) {
         if (tick % (random_tick_speed + max_player_speed - players[k].speed) === 0) {

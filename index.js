@@ -28,6 +28,10 @@ export function print_captured(captured) {
     }
 }
 
+export function print_points(points) {
+    document.querySelector('#player-score > span').textContent = points;
+}
+
 function start_game(player_name) {
     let players = [
         new Player(cell_types.P1, cell_types.P1_TOWER, player_name, 0, 0, direction.NONE),

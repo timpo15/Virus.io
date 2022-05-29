@@ -1,6 +1,6 @@
 import {cell_types} from "./cell.js";
 import {direction} from "./player.js";
-import {get_random_int_from_range} from "./utilities.js";
+import {get_random_int_from_range, kukarek} from "./utilities.js";
 import {player, print_captured} from "./index.js";
 
 export const field_height = 30;
@@ -16,10 +16,10 @@ function check_neighbours(cells, i, j, player_, dir_i, dir_j, cell_styles, tower
         || cells[i + dir_i][j + dir_j].state === cell_types.FREE_TOWER;
     f |= cell_styles.has(cells[i + dir_i][j + dir_j].state)
         && cells[i + dir_i][j + dir_j].state !== player_.cell_style
-        && prob < player_.strength / (player_.strength + cells[i + dir_i][j + dir_j].player.strength);
+        && prob < kukarek(player_.strength, cells[i + dir_i][j + dir_j].player.strength);
     f |= tower_styles.has(cells[i + dir_i][j + dir_j].state)
         && cells[i + dir_i][j + dir_j].state !== player_.tower_style
-        && prob < player_.strength / (player_.strength + cells[i + dir_i][j + dir_j].player.strength);
+        && prob < kukarek(player_.strength, cells[i + dir_i][j + dir_j].player.strength);
     return f;
 }
 
@@ -165,7 +165,7 @@ export function game_handler(cells, tick, players, cell_styles, tower_styles) {
     let captured = [];
     for (let k = 0; k < players.length; k++) {
         if (tick % (random_tick_speed + max_player_speed - players[k].speed) === 0) {
-            console.log(players[k].name + " " + players[k].speed + " " + players[k].strength);
+            // console.log(players[k].name + " " + players[k].speed + " " + players[k].strength);
             update_map(cells, players[k], cell_styles, tower_styles);
             process_loss(cells, players);
         }

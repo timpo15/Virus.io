@@ -1,7 +1,7 @@
 import {cell_types} from "./cell.js";
 import {direction} from "./player.js";
 import {get_random_int_from_range, kukarek} from "./utilities.js";
-import {player, print_captured} from "./index.js";
+import {player, print_captured, handle_player_win, handle_player_loss} from "./index.js";
 
 export const field_height = 30;
 export const field_width = 30;
@@ -129,36 +129,29 @@ function process_loss(cells, players) {
                     }
                 }
             }
-            if (k === 0) {
-                handle_player_loss();
-            }
+            handle_loss(players, k);
         }
         else {
             alive.push(k);
         }
     }
     if (alive.length === 1) {
-        do_smth_when_only_one_left(players, alive[0]);
+        handle_win(players, alive[0]);
     }
 }
 
-function handle_player_loss() {
-    document.querySelector("#modal-text").innerText = "Вы проиграли, вы лох";
-    document.querySelector(".modal_window").classList.remove("hidden");
-}
-
-function handle_player_win() {
-    document.querySelector("#modal-text").innerText = "Вы выиграли, но все равно вы лох";
-    document.querySelector(".modal_window").classList.remove("hidden");
-}
-
-function do_smth_when_only_one_left(players, id) {
+function handle_win(players, id) {
     if (id === 0) {
         handle_player_win();
     }
     //TODO: Саня ты в порядке
 }
 
+function handle_loss(players, id) {
+    if (id === 0) {
+        handle_player_loss();
+    }
+}
 
 export function game_handler(cells, tick, players, cell_styles, tower_styles) {
     document.querySelector('#player-score > span').textContent = player.points;

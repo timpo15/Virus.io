@@ -6,6 +6,16 @@ import {game_handler, field_height, field_width, tps, max_player_speed} from "./
 export let player = undefined;
 let game_handler_event = undefined;
 
+export function handle_player_loss() {
+    document.querySelector("#modal-text").innerText = "Вы проиграли, вы лох";
+    document.querySelector(".modal_window").classList.remove("hidden");
+}
+
+export function handle_player_win() {
+    document.querySelector("#modal-text").innerText = "Вы выиграли, но все равно вы лох";
+    document.querySelector(".modal_window").classList.remove("hidden");
+}
+
 function print_player_names(players) {
     for (let i = 0; i < players.length; i++) {
         document.querySelector(`.player${i + 1}_captured .nick`).textContent = players[i].name;
@@ -20,11 +30,13 @@ export function print_captured(captured) {
 
 function start_game(player_name) {
     let players = [
-        new Player(cell_types.P1, cell_types.P1_TOWER, player_name, 0, 0, direction.NONE),
+        new Player(cell_types.P1, cell_types.P1_TOWER, player_name, 1488, 50, direction.NONE),
         new Player(cell_types.P2, cell_types.P2_TOWER, "enemy_1", 0, 0, direction.DOWN),
         new Player(cell_types.P3, cell_types.P3_TOWER, "enemy_2", 0, 0, direction.NONE),
         new Player(cell_types.P4, cell_types.P4_TOWER, "enemy_3", 0, 0, direction.NONE)];
     player = players[0];
+    document.querySelector('#speed > span').textContent = player.speed.toString();
+    document.querySelector('#power > span').textContent = player.strength.toString();
     print_player_names(players);
     let tower_styles = new Set();
     let cell_styles = new Set();
@@ -82,8 +94,7 @@ const span = document.getElementById("restart");
 // }
 
 document.querySelector("#rules").addEventListener("click", () => {
-    document.querySelector("#modal-text").innerText="Прошу отчислить по собственному желанию"
-    document.querySelector(".modal_window").classList.remove("hidden");
+    //TODO: добавить открытие окошка с правилами
 });
 
 document.querySelector("#menu").addEventListener("click", () => {
@@ -91,6 +102,12 @@ document.querySelector("#menu").addEventListener("click", () => {
     clearInterval(game_handler_event);
     document.querySelector(".game").classList.add("hidden");
     document.querySelector(".main").classList.remove("hidden");
+});
+
+document.querySelector("#restart").addEventListener("click", () => {
+    document.querySelector(".modal_window").classList.add("hidden");
+    clearInterval(game_handler_event);
+    start_game(player.name);
 });
 
 document.querySelector("#play").addEventListener("click", () => {
@@ -103,14 +120,14 @@ document.querySelector("#play").addEventListener("click", () => {
        alert("Слишком длинное имя");
        return;
    }
+   document.querySelector(".modal_window").classList.add("hidden");
    document.querySelector(".main").classList.add("hidden");
    document.querySelector(".game").classList.remove("hidden");
    start_game(nameInput.value);
 });
 
 document.querySelector("#give-up").addEventListener("click", () => {
-    document.querySelector("#modal-text").innerText = "Вы проиграли, вы лох";
-    document.querySelector(".modal_window").classList.remove("hidden");
+    handle_player_loss();
 });
 
 window.addEventListener('keydown', function(e) {

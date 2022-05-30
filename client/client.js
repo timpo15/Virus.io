@@ -35,7 +35,7 @@ myWs.onmessage = function (message) {
 };
 
 function start_game(name) {
-    myWs.send(JSON.stringify({action: 'NEW_GAME', name: name, id: player_id, room_id: room_id}));
+    myWs.send(JSON.stringify({action: 'START_GAME', id: player_id, room_id: room_id}));
 }
 
 function set_direction(direction) {

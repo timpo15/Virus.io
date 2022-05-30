@@ -48,7 +48,7 @@ export function start_game(room) {
         cell_styles.add(player.cell_style);
         tower_styles.add(player.tower_style);
     }
-    let cells = generate_table(field_height, field_width);
+    let cells = room.map;
     do {
         clear_map(cells);
         generate_map(cells, players);

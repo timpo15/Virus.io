@@ -20,7 +20,7 @@ export const styles = [[cell_types.P1, cell_types.P1_TOWER],
     [cell_types.P3, cell_types.P3_TOWER],
     [cell_types.P4, cell_types.P4_TOWER]];
 const rooms = {}
-const players = [];
+const players = {};
 
 function onConnect(wsClient) {
     console.log('Новый пользователь');
@@ -44,6 +44,7 @@ function onConnect(wsClient) {
                     const host = new Player(p, p_tower, v4(), room.id, jsonMessage.name, 0, 0, direction.NONE);
                     room.players.push(host);
                     rooms[room.id] = room;
+                    players[host.id] = host;
                     wsClient.send(JSON.stringify({
                         action: 'CONSTANTS',
                         width: field_width,
@@ -61,6 +62,7 @@ function onConnect(wsClient) {
                     }
                     const {p, p_tower} = styles[room.players.length];
                     const slave = new Player(p, p_tower, v4(), room.id, jsonMessage.name, 0, 0, direction.NONE);
+                    players[slave.id] = slave;
                     room.players.push(slave);
                     wsClient.send(JSON.stringify({
                         action: 'CONSTANTS',
@@ -78,19 +80,20 @@ function onConnect(wsClient) {
                     break;
                 }
                 case 'SET_DIRECTION':
-                    player.direction = jsonMessage.direction;
+                    players[jsonMessage.id] = jsonMessage.direction;
                     break;
                 case 'UPGRADE':
-                    player.add_speed(jsonMessage.speed);
-                    player.add_power(jsonMessage.power);
+                    let p = players[jsonMessage.id];
+                    p.add_speed(jsonMessage.speed);
+                    p.add_power(jsonMessage.power);
                     wsClient.send(JSON.stringify({
                         action: 'UPGRADE',
-                        speed: player.speed,
-                        power: player.strength
+                        speed: p.speed,
+                        power: p.strength
                     }));
                     wsClient.send(JSON.stringify({
                         action: 'POINTS',
-                        points: player.points
+                        points: p.points
                     }));
                     break;
                 default:

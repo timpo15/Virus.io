@@ -87,6 +87,38 @@ td {
 }
 
 
+.rule-content {
+    background-color: #EEFDFF;
+    border-radius: 30px;
+    margin: 15% auto;
+    padding: 40px;
+    border: 1px solid #888;
+    width: 1200px;
+}
+
+#rule-text{
+    color: #778697;
+    font-size: 15pt;
+}
+
+.rules-button{
+    width: 160px;
+    background: #EEFDFF;
+    color: #778697;
+    border-radius: 20px;
+    height: 40px;
+    border-width: 2px;
+    border-color: #6896f8;
+    font-size: 15pt;
+    font-weight: normal;
+
+}
+.rules-buttons{
+    width: 100%;
+    margin-top: 15px;
+}
+
+
 .modal {
     position: fixed;
     z-index: 1;
@@ -97,6 +129,8 @@ td {
     overflow: auto;
     background-color: rgba(0,0,0,0.4);
 }
+
+
 
 .modal-content {
     background-color: #B9F0F8;
@@ -129,7 +163,6 @@ td {
     border-color: #6896f8;
     font-size: 15pt;
     font-weight: normal;
-
 
 }
 .modal-buttons{

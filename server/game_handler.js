@@ -1,7 +1,7 @@
 import {cell_types} from "./cell.js";
 import {direction} from "./player.js";
 import {get_random_int_from_range, kukarek} from "./utilities.js";
-import {player, print_captured, handle_player_win, handle_player_loss, print_points} from "./index.js";
+import {player, print_captured, handle_player_win, handle_player_loss, print_points} from "./index.mjs";
 
 export const field_height = 30;
 export const field_width = 30;
@@ -104,6 +104,7 @@ function update_map(cells, player, cell_styles, tower_styles) {
 }
 
 function update_points(player_) {
+    print_points(player.points);
     player_.points += player_.tower_num;
     if (player_ !== player) { //TODO: БАБКА ЛЮТАЯ(исправить)
         let points_to_speed = Math.min(max_player_speed - player_.speed, get_random_int_from_range(0, player_.points));
@@ -154,7 +155,6 @@ function handle_loss(players, id) {
 }
 
 export function game_handler(cells, tick, players, cell_styles, tower_styles) {
-    print_points(player.points);
     let captured = [];
     for (let k = 0; k < players.length; k++) {
         if (tick % (random_tick_speed + max_player_speed - players[k].speed) === 0) {

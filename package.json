@@ -2,12 +2,20 @@
   "name": "untitled",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server/index.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node --experimental-modules server/server.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "uuid": "^8.3.2",
+    "ws": "^8.7.0"
+  },
+  "optionalDependencies": {
+    "utf-8-validate": "^5.0.9"
+  }
 }

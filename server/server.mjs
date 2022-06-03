@@ -1,7 +1,7 @@
 import WebSocket, {WebSocketServer} from 'ws';
+import {v4} from "uuid";
 import {player, start_game} from "./index.mjs";
 import {field_height, field_width} from "./game_handler.js";
-import {v4} from "uuid";
 import {Room} from "./room.js";
 import {direction, Player} from "./player.js";
 import {cell_types} from "./cell.js";
@@ -40,7 +40,7 @@ function onConnect(wsClient) {
                     break;
                 case 'CREATE_ROOM': {
                     const room = new Room(v4());
-                    const {p, p_tower} = styles[0];
+                    const [p, p_tower] = styles[0];
                     const host = new Player(p, p_tower, v4(), room.id, jsonMessage.name, 0, 0, direction.NONE);
                     room.players.push(host);
                     rooms[room.id] = room;
@@ -60,7 +60,7 @@ function onConnect(wsClient) {
                         wsClient.send("Poshel naxui");
                         break;
                     }
-                    const {p, p_tower} = styles[room.players.length];
+                    const [p, p_tower] = styles[room.players.length];
                     const slave = new Player(p, p_tower, v4(), room.id, jsonMessage.name, 0, 0, direction.NONE);
                     players[slave.id] = slave;
                     room.players.push(slave);

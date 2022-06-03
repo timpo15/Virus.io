@@ -104,14 +104,14 @@ function update_map(cells, player, cell_styles, tower_styles) {
 }
 
 function update_points(player_) {
-    print_points(player.points);
-    player_.points += player_.tower_num;
-    if (player_ !== player) { //TODO: БАБКА ЛЮТАЯ(исправить)
-        let points_to_speed = Math.min(max_player_speed - player_.speed, get_random_int_from_range(0, player_.points));
-        player_.strength += player_.points - points_to_speed;
-        player_.speed += points_to_speed;
-        player_.points = 0;
-    }
+    // print_points(player.points);
+    // player_.points += player_.tower_num;
+    // if (player_ !== player) { //TODO: БАБКА ЛЮТАЯ(исправить)
+    //     let points_to_speed = Math.min(max_player_speed - player_.speed, get_random_int_from_range(0, player_.points));
+    //     player_.strength += player_.points - points_to_speed;
+    //     player_.speed += points_to_speed;
+    //     player_.points = 0;
+    // }
 }
 
 function process_loss(cells, players) {

@@ -36,9 +36,13 @@ export function print_points(points) {
 
 export function start_game(room) {
     let players = room.players;
+    room.status = 1;
     for(let i = players.length; i < 4; i++) {
-        let {p, p_tower} = styles[i];
-        players.push(new Player(p, p_tower, i, room.id,`enemy_${i}`, 0, 0, direction.NONE));
+        let [p, p_tower] = styles[i];
+        console.log(p + " " + p_tower);
+        let player1 = new Player(p, p_tower, i, room.id,`enemy_${i}`, 0, 0, direction.NONE);
+        players.push(player1);
+        room.players.push(player1);
     }
 
     print_player_names(players);

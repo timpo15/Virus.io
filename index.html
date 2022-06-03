@@ -16,8 +16,46 @@
             <div class="menu">
                 <h1 class="logo">Virus.io</h1>
                 <input type="text" name="nickname" id="nickname" placeholder="Enter name" class="menu_list">
-                <button id="play" class="menu_list">Play</button>
+                <button id="create" class="menu_list">Create team</button>
+                <button id="join" class="menu_list">Join team</button>
                 <button id="rules" class="menu_list">Rules</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="waiting_window hidden">
+    <div class="container">
+        <div class="waiting" id="waiting">
+            <div class="waiting-content" id="waiting-content">
+                <div class="waiting-text-box">
+                    <div id="waiting-text">
+                        Твой ID: иди нахуй
+                        <br>
+                        <br>
+                        Командa:
+                        <br>
+                        с тобой не хотят играть лох
+
+
+                    </div>
+                </div>
+                <div class="waiting-buttons">
+                    <button id="play">play</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="join hidden">
+    <div class="container">
+        <div class="modal-join" id="modal-join">
+            <div class="modal-join-content" id="modal-join-content">
+                <input type="text" name="team-Id" id="team-id" placeholder="Enter team ID">
+                <div class="modal-buttons">
+                    <button id="button-join" class="modal-button">join</button>
+                </div>
             </div>
         </div>
     </div>

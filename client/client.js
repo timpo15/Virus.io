@@ -120,6 +120,21 @@ document.querySelector("#rules").addEventListener("click", () => {
 //     start_game(player.name);
 // });
 
+document.querySelector("#join").addEventListener("click", () => {
+    document.querySelector(".join").classList.remove("hidden");
+});
+
+document.querySelector("#create").addEventListener("click", () => {
+    document.querySelector(".main").classList.add("hidden");
+    document.querySelector(".waiting_window").classList.remove("hidden");
+});
+
+document.querySelector("#button-join").addEventListener("click", () => {
+    document.querySelector(".main").classList.add("hidden");
+    document.querySelector(".join").classList.add("hidden");
+    document.querySelector(".waiting_window").classList.remove("hidden");
+});
+
 document.querySelector("#play").addEventListener("click", () => {
     const nameInput = document.querySelector("#nickname");
     if (nameInput.value.length === 0) {

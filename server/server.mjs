@@ -9,9 +9,11 @@ import {cell_types} from "./cell.js";
 export const wsServer = new WebSocketServer({port: 9000});
 wsServer.on('connection', onConnect);
 
-export function broadcast(message) {
-    for (const client of wsServer.clients) {
-        client.send(JSON.stringify(message));
+export function broadcast(room, message) {
+    for (const player of room.players) {
+        if (!player.is_bot) {
+            player.socket.send(JSON.stringify(message));
+        }
     }
 }
 
@@ -41,7 +43,7 @@ function onConnect(wsClient) {
                 case 'CREATE_ROOM': {
                     const room = new Room(v4());
                     const [p, p_tower] = styles[0];
-                    const host = new Player(p, p_tower, v4(), room.id, jsonMessage.name, 0, 0, direction.NONE);
+                    const host = new Player(p, p_tower, v4(), room.id, jsonMessage.name, 0, 0, direction.NONE, wsClient);
                     room.players.push(host);
                     rooms[room.id] = room;
                     players[host.id] = host;
@@ -55,13 +57,19 @@ function onConnect(wsClient) {
                     break;
                 }
                 case 'JOIN_ROOM': {
+                    if (!(jsonMessage.room_id in rooms)) {
+                        wsClient.send(JSON.stringify({
+                            action: 'WRONG_ROOM_ID'
+                        }));
+                    }
                     const room = rooms[jsonMessage.room_id];
                     if (room.players.length === 4) {
-                        wsClient.send("Poshel naxui");
-                        break;
+                        wsClient.send(JSON.stringify({
+                            action: 'FULL_ROOM'
+                        }));
                     }
                     const [p, p_tower] = styles[room.players.length];
-                    const slave = new Player(p, p_tower, v4(), room.id, jsonMessage.name, 0, 0, direction.NONE);
+                    const slave = new Player(p, p_tower, v4(), room.id, jsonMessage.name, 0, 0, direction.NONE, wsClient);
                     players[slave.id] = slave;
                     room.players.push(slave);
                     wsClient.send(JSON.stringify({
@@ -75,8 +83,14 @@ function onConnect(wsClient) {
                 }
                 case 'START_GAME': {
                     const room = rooms[jsonMessage.room_id];
-                    if (room.players[0].id === jsonMessage.id)
+                    if (room.players[0].id === jsonMessage.id) {
                         start_game(room);
+                    }
+                    else {
+                        wsClient.send(JSON.stringify({
+                            action: 'ACCESS_DENIED'
+                        }));
+                    }
                     break;
                 }
                 case 'SET_DIRECTION':

@@ -1,23 +1,14 @@
 import {Cell, cell_types} from "./cell.js";
 import {get_random_int_from_range} from "./utilities.js";
 
-export function generate_table(n, m) {
+export function generate_table(n, m, room) {
     let cells = new Array(n);
-    //let tblBody = document.querySelector("#game-field");
-    //tblBody.innerHTML = "";
     for (let i = 0; i < n; i++) {
         cells[i] = new Array(m);
-        // let row = document.createElement("tr");
         for (let j = 0; j < m; j++) {
-            //     let cell = document.createElement("td");
-            cells[i][j] = new Cell(null, `${i} ${j}`);
-            //     cell.setAttribute("id", cells[i][j].id);
-            //     cell.setAttribute("class", cells[i][j].state);
-            //     row.appendChild(cell);
+            cells[i][j] = new Cell(null, `${i} ${j}`, room);
         }
-        // tblBody.appendChild(row);
     }
-
     return cells;
 }
 

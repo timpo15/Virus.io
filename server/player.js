@@ -10,7 +10,7 @@ export const direction = {
 };
 
 export class Player {
-    constructor(cell_style, tower_style, id, room_id, name = "Player", strength = 0, speed = 0, direction = direction.NONE) {
+    constructor(cell_style, tower_style, id, room_id, name = "Player", strength = 0, speed = 0, direction = direction.NONE, socket = undefined, is_bot = false) {
         this.cell_style = cell_style;
         this.tower_style = tower_style;
         this.id = id;
@@ -21,12 +21,11 @@ export class Player {
         this.direction = direction;
         this.tower_num = 1;
         this.points = 0;
+        this.socket = socket;
+        this.is_bot = is_bot;
     }
 
     add_speed(value) {
-        if (this.speed === max_player_speed)
-            return;
-
         value = Math.min(value, max_player_speed - this.speed, this.points);
         this.speed += value;
         this.points -= value;

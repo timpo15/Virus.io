@@ -39,10 +39,8 @@ export function start_game(room) {
     room.status = 1;
     for(let i = players.length; i < 4; i++) {
         let [p, p_tower] = styles[i];
-        console.log(p + " " + p_tower);
-        let player1 = new Player(p, p_tower, i, room.id,`enemy_${i}`, 0, 0, direction.NONE);
+        let player1 = new Player(p, p_tower, i, room.id,`enemy_${i}`, 0, 0, direction.NONE, undefined, true);
         players.push(player1);
-        room.players.push(player1);
     }
 
     print_player_names(players);

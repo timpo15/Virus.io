@@ -5,8 +5,7 @@ export class Room {
     constructor(id) {
         this.id = id;
         this.players = new Array(0);
-        this.map = generate_table(field_height, field_width);
+        this.map = generate_table(field_height, field_width, this);
         this.interval = undefined;
-        this.status = 0;
     }
 }

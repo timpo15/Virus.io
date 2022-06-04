@@ -15,16 +15,17 @@ export const cell_types = {
 };
 
 export class Cell {
-    constructor(tag, id, state = cell_types.FREE, player = undefined) {
+    constructor(tag, id, room = undefined, state = cell_types.FREE, player = undefined) {
         this.tag = tag;
         this.id = id;
         this._state = state;
+        this.room = room;
         this.player = player;
     }
 
     set state(value) {
         this._state = value;
-        broadcast({action: 'CELL', cell_id: this.id, state: value});
+        broadcast(this.room, {action: 'CELL', cell_id: this.id, state: value});
     }
 
     get state() {

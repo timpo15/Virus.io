@@ -1,7 +1,7 @@
 import {cell_types} from "./cell.js";
 import {direction} from "./player.js";
 import {get_random_int_from_range, kukarek} from "./utilities.js";
-import {player, print_captured, handle_player_win, handle_player_loss, print_points} from "./index.mjs";
+import {send_captured, handle_player_win, handle_player_loss, send_points} from "./index.mjs";
 
 export const field_height = 30;
 export const field_width = 30;
@@ -103,15 +103,17 @@ function update_map(cells, player, cell_styles, tower_styles) {
     }
 }
 
-function update_points(player_) {
-    // print_points(player.points);
-    // player_.points += player_.tower_num;
-    // if (player_ !== player) { //TODO: БАБКА ЛЮТАЯ(исправить)
-    //     let points_to_speed = Math.min(max_player_speed - player_.speed, get_random_int_from_range(0, player_.points));
-    //     player_.strength += player_.points - points_to_speed;
-    //     player_.speed += points_to_speed;
-    //     player_.points = 0;
-    // }
+function update_points(room, player_) {
+    player_.points += player_.tower_num;
+    if (!player_.is_bot) {
+        send_points(player_);
+    }
+    if (player_.is_bot) { //TODO: БАБКА ЛЮТАЯ(исправить)
+        let points_to_speed = Math.min(max_player_speed - player_.speed, get_random_int_from_range(0, player_.points));
+        player_.strength += player_.points - points_to_speed;
+        player_.speed += points_to_speed;
+        player_.points = 0;
+    }
 }
 
 function process_loss(cells, players) {
@@ -154,25 +156,25 @@ function handle_loss(players, id) {
     }
 }
 
-export function game_handler(cells, tick, players, cell_styles, tower_styles) {
+export function game_handler(room, tick, cell_styles, tower_styles) {
     let captured = [];
-    for (let k = 0; k < players.length; k++) {
-        if (tick % (random_tick_speed + max_player_speed - players[k].speed) === 0) {
+    for (let k = 0; k < room.players.length; k++) {
+        if (tick % (random_tick_speed + max_player_speed - room.players[k].speed) === 0) {
             // console.log(players[k].name + " " + players[k].speed + " " + players[k].strength);
-            update_map(cells, players[k], cell_styles, tower_styles);
-            process_loss(cells, players);
+            update_map(room.map, room.players[k], cell_styles, tower_styles);
+            process_loss(room.map, room.players);
         }
         if (tick % point_tick_speed === 0) {
-            update_points(players[k]);
+            update_points(room, room.players[k]);
         }
         captured.push(0);
-        for (let i = 0; i < cells.length; i++) {
-            for (let j = 0; j < cells[i].length; j++) {
-                if (cells[i][j].player === players[k]) {
+        for (let i = 0; i < room.map.length; i++) {
+            for (let j = 0; j < room.map[i].length; j++) {
+                if (room.map[i][j].player === room.players[k]) {
                     captured[k]++;
                 }
             }
         }
     }
-    print_captured(captured);
+    send_captured(room, captured);
 }

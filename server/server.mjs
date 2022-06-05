@@ -1,6 +1,6 @@
 import WebSocket, {WebSocketServer} from 'ws';
 import {v4} from "uuid";
-import {player, start_game} from "./index.mjs";
+import {start_game} from "./index.mjs";
 import {field_height, field_width} from "./game_handler.js";
 import {Room} from "./room.js";
 import {direction, Player} from "./player.js";
@@ -94,7 +94,7 @@ function onConnect(wsClient) {
                     break;
                 }
                 case 'SET_DIRECTION':
-                    players[jsonMessage.id] = jsonMessage.direction;
+                    players[jsonMessage.id].direction = jsonMessage.direction;
                     break;
                 case 'UPGRADE':
                     let p = players[jsonMessage.id];

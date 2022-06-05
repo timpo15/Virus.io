@@ -4,9 +4,6 @@ import {generate_map, clear_map, check_tower_connectivity_and_fill_holes, genera
 import {game_handler, field_height, field_width, tps} from "./game_handler.js";
 import {broadcast, styles} from "./server.mjs";
 
-export let player = undefined;
-let game_handler_event = undefined;
-
 export function handle_player_loss() {
     // document.querySelector("#modal-text").innerText = "Вы проиграли, вы лох";
     // document.querySelector(".modal_window").classList.remove("hidden");
@@ -17,21 +14,31 @@ export function handle_player_win() {
     // document.querySelector(".modal_window").classList.remove("hidden");
 }
 
-function print_player_names(players) {
+function send_player_names(room) {
+    for (let i = 0; i < room.players.length; i++) {
+        if (!room.players[i].is_bot) {
+            broadcast(room, {action: 'SET_NAME', name: room.players[i].name, i: i});
+        }
+    }
     // for (let i = 0; i < players.length; i++) {
     //     document.querySelector(`.player${i + 1}_captured .nick`).textContent = players[i].name;
     // }
 }
 
-export function print_captured(captured) {
-
+export function send_captured(room, captured) {
+    for (let i = 0; i < captured.length; i++) {
+        broadcast(room, {action: "UPDATE_CAPTURED", value: captured[i], i:i});
+    }
     // for (let i = 0; i < captured.length; i++) {
     //     document.querySelector(`.player${i + 1}_captured .score`).textContent = captured[i];
     // }
 }
 
-export function print_points(points) {
-    broadcast({action: 'POINTS', points: points});
+export function send_points(player) {
+    player.socket.send(JSON.stringify({
+        action: 'POINTS',
+        points: player.points
+    }));
 }
 
 export function start_game(room) {
@@ -43,7 +50,7 @@ export function start_game(room) {
         players.push(player1);
     }
 
-    print_player_names(players);
+    send_player_names(room);
     let tower_styles = new Set();
     let cell_styles = new Set();
     for (let player of players) {
@@ -56,10 +63,10 @@ export function start_game(room) {
         generate_map(cells, players);
     }
     while (!check_tower_connectivity_and_fill_holes(cells, tower_styles));
-
+    broadcast(room, {action: 'START_GAME'});
     let tick = 0;
-    game_handler_event = setInterval(() => {
-        game_handler(cells, tick, players, cell_styles, tower_styles);
+    let game_handler_event = setInterval(() => {
+        game_handler(room, tick, cell_styles, tower_styles);
         tick = (tick + 1);
     }, 1000 / tps);
     room.interval = game_handler_event;

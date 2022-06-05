@@ -5,7 +5,6 @@ export function get_random_int_from_range(min, max) {
 
 // Первый тот, кто захватывает клетку
 export function kukarek(x, y) {
-    console.log(sigmoid((x - y) / 10) + " " + x + " " + y);
     return sigmoid((x - y) / 10);
 }
 

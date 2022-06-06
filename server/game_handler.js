@@ -132,6 +132,10 @@ function check_win_and_lose(cells, players) {
 }
 
 function handle_win(player) {
+    if (!player.alive) {
+        return;
+    }
+    player.alive = false;
     if (!player.is_bot) {
         player.socket.send(JSON.stringify({
             action: 'END_GAME',

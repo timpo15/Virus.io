@@ -16,9 +16,7 @@ export function handle_player_win() {
 
 function send_player_names(room) {
     for (let i = 0; i < room.players.length; i++) {
-        if (!room.players[i].is_bot) {
-            broadcast(room, {action: 'SET_NAME', name: room.players[i].name, i: i});
-        }
+        broadcast(room, {action: 'SET_NAME', name: room.players[i].name, i: i});
     }
     // for (let i = 0; i < players.length; i++) {
     //     document.querySelector(`.player${i + 1}_captured .nick`).textContent = players[i].name;
@@ -43,10 +41,10 @@ export function send_points(player) {
 
 export function start_game(room) {
     let players = room.players;
-    room.status = 1;
+    let players_number = players.length;
     for(let i = players.length; i < 4; i++) {
         let [p, p_tower] = styles[i];
-        let player1 = new Player(p, p_tower, i, room.id,`enemy_${i}`, 0, 0, direction.NONE, undefined, true);
+        let player1 = new Player(p, p_tower, i, room.id,`bot ${i - players_number + 1}`, 0, 0, direction.NONE, undefined, true);
         players.push(player1);
     }
 

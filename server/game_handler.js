@@ -120,19 +120,7 @@ function process_loss(cells, players) {
     let alive = [];
     for (let k = 0; k < players.length; k++) {
         if (players[k].tower_num === 0) {
-            for (let i = 0; i < cells.length; i++) {
-                for (let j = 0; j < cells[i].length; j++) {
-                    if (cells[i][j].state === players[k].tower_style) {
-                        cells[i][j].state = cell_types.FREE_TOWER;
-                        cells[i][j].player = undefined;
-                    }
-                    else if (cells[i][j].state === players[k].cell_style) {
-                        cells[i][j].state = cell_types.FREE;
-                        cells[i][j].player = undefined;
-                    }
-                }
-            }
-            handle_loss(players, k);
+            handle_loss(cells, players[k]);
         }
         else {
             alive.push(k);
@@ -143,16 +131,33 @@ function process_loss(cells, players) {
     }
 }
 
-function handle_win(players, id) {
-    if (id === 0) {
-        handle_player_win();
+function handle_win(player) {
+    if (!player.is_bot) {
+        player.socket.send(JSON.stringify({
+            action: 'END_GAME',
+            result: 'WIN'
+        }));
     }
-    //TODO: Саня ты в порядке
 }
 
-function handle_loss(players, id) {
-    if (id === 0) {
-        handle_player_loss();
+export function handle_loss(cells, player) {
+    for (let i = 0; i < cells.length; i++) {
+        for (let j = 0; j < cells[i].length; j++) {
+            if (cells[i][j].state === player.tower_style) {
+                cells[i][j].state = cell_types.FREE_TOWER;
+                cells[i][j].player = undefined;
+            }
+            else if (cells[i][j].state === player.cell_style) {
+                cells[i][j].state = cell_types.FREE;
+                cells[i][j].player = undefined;
+            }
+        }
+    }
+    if (!player.is_bot) {
+        player.socket.send(JSON.stringify({
+            action: 'END_GAME',
+            result: 'LOSE'
+        }));
     }
 }
 

@@ -1,7 +1,7 @@
 import WebSocket, {WebSocketServer} from 'ws';
 import {v4} from "uuid";
 import {start_game} from "./index.mjs";
-import {field_height, field_width} from "./game_handler.js";
+import {field_height, field_width, handle_loss} from "./game_handler.js";
 import {Room} from "./room.js";
 import {direction, Player} from "./player.js";
 import {cell_types} from "./cell.js";
@@ -109,6 +109,12 @@ function onConnect(wsClient) {
                         action: 'POINTS',
                         points: p.points
                     }));
+                    break;
+                case 'GIVE_UP':
+                    handle_loss(rooms[jsonMessage.room_id].map, players[jsonMessage.id]);
+                    break;
+                case 'LEAVE':
+                    //TODO: удалять комнату, если она стала пустой
                     break;
                 default:
                     console.log('Неизвестная команда');

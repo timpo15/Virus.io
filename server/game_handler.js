@@ -1,7 +1,7 @@
 import {cell_types} from "./cell.js";
 import {direction} from "./player.js";
 import {get_random_int_from_range, kukarek} from "./utilities.js";
-import {send_captured, handle_player_win, handle_player_loss, send_points} from "./index.mjs";
+import {send_captured, send_points} from "./index.mjs";
 
 export const field_height = 30;
 export const field_width = 30;

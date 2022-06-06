@@ -4,32 +4,24 @@ import {generate_map, clear_map, check_tower_connectivity_and_fill_holes, genera
 import {game_handler, field_height, field_width, tps} from "./game_handler.js";
 import {broadcast, styles} from "./server.mjs";
 
-export function handle_player_loss() {
-    // document.querySelector("#modal-text").innerText = "Вы проиграли, вы лох";
-    // document.querySelector(".modal_window").classList.remove("hidden");
-}
-
-export function handle_player_win() {
-    // document.querySelector("#modal-text").innerText = "Вы выиграли, но все равно вы лох";
-    // document.querySelector(".modal_window").classList.remove("hidden");
-}
-
 function send_player_names(room) {
     for (let i = 0; i < room.players.length; i++) {
-        broadcast(room, {action: 'SET_NAME', name: room.players[i].name, i: i});
+        if (!room.players[i].is_bot) {
+            for (let j = 0; j < room.players.length; j++) {
+                room.players[i].socket.send(JSON.stringify({
+                        action: 'SET_NAME',
+                        name: room.players[j].name + (i === j ? " (you)": ""),
+                        i: j
+                }))
+            }
+        }
     }
-    // for (let i = 0; i < players.length; i++) {
-    //     document.querySelector(`.player${i + 1}_captured .nick`).textContent = players[i].name;
-    // }
 }
 
 export function send_captured(room, captured) {
     for (let i = 0; i < captured.length; i++) {
         broadcast(room, {action: "UPDATE_CAPTURED", value: captured[i], i:i});
     }
-    // for (let i = 0; i < captured.length; i++) {
-    //     document.querySelector(`.player${i + 1}_captured .score`).textContent = captured[i];
-    // }
 }
 
 export function send_points(player) {

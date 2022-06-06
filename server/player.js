@@ -23,6 +23,7 @@ export class Player {
         this.points = 0;
         this.socket = socket;
         this.is_bot = is_bot;
+        this.alive = true;
     }
 
     add_speed(value) {

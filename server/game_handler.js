@@ -116,7 +116,7 @@ function update_points(room, player_) {
     }
 }
 
-function process_loss(cells, players) {
+function check_win_and_lose(cells, players) {
     let alive = [];
     for (let k = 0; k < players.length; k++) {
         if (players[k].tower_num === 0) {
@@ -127,7 +127,7 @@ function process_loss(cells, players) {
         }
     }
     if (alive.length === 1) {
-        handle_win(players, alive[0]);
+        handle_win(players[alive[0]]);
     }
 }
 
@@ -141,6 +141,11 @@ function handle_win(player) {
 }
 
 export function handle_loss(cells, player) {
+    if (!player.alive) {
+        return;
+    }
+    player.alive = false;
+    player.tower_num = 0;
     for (let i = 0; i < cells.length; i++) {
         for (let j = 0; j < cells[i].length; j++) {
             if (cells[i][j].state === player.tower_style) {
@@ -167,7 +172,7 @@ export function game_handler(room, tick, cell_styles, tower_styles) {
         if (tick % (random_tick_speed + max_player_speed - room.players[k].speed) === 0) {
             // console.log(players[k].name + " " + players[k].speed + " " + players[k].strength);
             update_map(room.map, room.players[k], cell_styles, tower_styles);
-            process_loss(room.map, room.players);
+            check_win_and_lose(room.map, room.players);
         }
         if (tick % point_tick_speed === 0) {
             update_points(room, room.players[k]);

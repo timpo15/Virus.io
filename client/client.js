@@ -16,10 +16,24 @@ myWs.onmessage = function (message) {
             generate_table(json.height, json.width);
             player_id = json.id;
             room_id = json.room_id;
+            document.querySelector("#waiting-text").textContent = `ID вашей комнаты: ${room_id}`;
             break;
         case 'CELL':
             const cell = document.getElementById(json.cell_id);
             cell.setAttribute('class', json.state);
+            break;
+        case 'START_GAME':
+            document.querySelector(".modal_window").classList.add("hidden");
+            document.querySelector(".main").classList.add("hidden");
+            document.querySelector(".waiting_window").classList.add("hidden");
+            document.querySelector(".game").classList.remove("hidden");
+            break;
+        case 'SET_NAME':
+            console.log(json.name);
+            document.querySelector(`.player${json.i + 1}_captured > .nick`).textContent = json.name;
+            break;
+        case 'UPDATE_CAPTURED':
+            document.querySelector(`.player${json.i + 1}_captured > .score`).textContent = json.value;
             break;
         case 'POINTS':
             document.querySelector('#player-score > span').textContent = json.points;
@@ -27,6 +41,17 @@ myWs.onmessage = function (message) {
         case 'UPGRADE':
             document.querySelector('#speed > span').textContent = json.speed.toString();
             document.querySelector('#power > span').textContent = json.power.toString();
+            break;
+        case 'END_GAME':
+            let text;
+            if (json.result === 'WIN') {
+                text = 'Вы выиграли';
+            }
+            else if (json.result === 'LOSE') {
+                text = 'Вы проиграли';
+            }
+            document.querySelector('#modal-text').textContent = text;
+            document.querySelector(".modal_window").classList.remove("hidden");
             break;
         default:
             console.log('huj');
@@ -48,6 +73,14 @@ function create_room(name) {
 
 function join_room(name, room_id) {
     myWs.send(JSON.stringify({action: 'JOIN_ROOM', name: name, room_id: room_id}));
+}
+
+function give_up() {
+    myWs.send(JSON.stringify({action: 'GIVE_UP', id: player_id, room_id: room_id}));
+}
+
+function leave_room() {
+    myWs.send(JSON.stringify({action: 'LEAVE', id: player_id}));
 }
 
 const cell_types = {
@@ -107,13 +140,6 @@ document.querySelector("#rules").addEventListener("click", () => {
     //TODO: добавить открытие окошка с правилами
 });
 
-// document.querySelector("#menu").addEventListener("click", () => {
-//     document.querySelector(".modal_window").classList.add("hidden");
-//     clearInterval(game_handler_event);
-//     document.querySelector(".game").classList.add("hidden");
-//     document.querySelector(".main").classList.remove("hidden");
-// });
-//
 // document.querySelector("#restart").addEventListener("click", () => {
 //     document.querySelector(".modal_window").classList.add("hidden");
 //     clearInterval(game_handler_event);
@@ -121,21 +147,6 @@ document.querySelector("#rules").addEventListener("click", () => {
 // });
 
 document.querySelector("#join").addEventListener("click", () => {
-    document.querySelector(".join").classList.remove("hidden");
-});
-
-document.querySelector("#create").addEventListener("click", () => {
-    document.querySelector(".main").classList.add("hidden");
-    document.querySelector(".waiting_window").classList.remove("hidden");
-});
-
-document.querySelector("#button-join").addEventListener("click", () => {
-    document.querySelector(".main").classList.add("hidden");
-    document.querySelector(".join").classList.add("hidden");
-    document.querySelector(".waiting_window").classList.remove("hidden");
-});
-
-document.querySelector("#play").addEventListener("click", () => {
     const nameInput = document.querySelector("#nickname");
     if (nameInput.value.length === 0) {
         alert("Введите имя");
@@ -145,14 +156,37 @@ document.querySelector("#play").addEventListener("click", () => {
         alert("Слишком длинное имя");
         return;
     }
-    document.querySelector(".modal_window").classList.add("hidden");
+    document.querySelector(".join").classList.remove("hidden");
+});
+
+document.querySelector("#create").addEventListener("click", () => {
+    const nameInput = document.querySelector("#nickname");
+    if (nameInput.value.length === 0) {
+        alert("Введите имя");
+        return;
+    }
+    if (nameInput.value.length > 15) {
+        alert("Слишком длинное имя");
+        return;
+    }
+    create_room(nameInput.value);
     document.querySelector(".main").classList.add("hidden");
-    document.querySelector(".game").classList.remove("hidden");
-    start_game(nameInput.value);
+    document.querySelector(".waiting_window").classList.remove("hidden");
+});
+
+document.querySelector("#button-join").addEventListener("click", () => {
+    join_room(document.querySelector("#nickname").value, document.querySelector("#team-id").value);
+    document.querySelector(".main").classList.add("hidden");
+    document.querySelector(".join").classList.add("hidden");
+    document.querySelector(".waiting_window").classList.remove("hidden");
+});
+
+document.querySelector("#play").addEventListener("click", () => {
+    start_game(document.querySelector("#nickname").value);
 });
 
 document.querySelector("#give-up").addEventListener("click", () => {
-    //handle_player_loss();
+    give_up();
 });
 
 window.addEventListener('keydown', function (e) {
@@ -203,4 +237,16 @@ document.querySelector('#speed').addEventListener('click', () => {
 
 document.querySelector('#power').addEventListener('click', () => {
     myWs.send(JSON.stringify({action: 'UPGRADE', id: player_id, speed: 0, power: 1, room_id: room_id}));
+});
+
+document.querySelector('#close-modal').addEventListener('click', () => {
+    document.querySelector(".modal_window").classList.add("hidden");
+});
+
+document.querySelector("#menu").addEventListener("click", () => {
+    document.querySelector(".modal_window").classList.add("hidden");
+    document.querySelector(".game").classList.add("hidden");
+    document.querySelector(".waiting_window").classList.add("hidden");
+    document.querySelector(".main").classList.remove("hidden");
+    leave_room();
 });

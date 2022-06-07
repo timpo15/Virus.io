@@ -75,6 +75,9 @@ function start_game(name) {
 }
 
 function set_direction(direction) {
+    if (player_id === undefined) {
+        return;
+    }
     myWs.send(JSON.stringify({action: 'SET_DIRECTION', direction: direction, id: player_id, room_id: room_id}));
 }
 
@@ -240,10 +243,16 @@ buttons['none'].addEventListener('click', () => {
 });
 
 document.querySelector('#speed').addEventListener('click', () => {
+    if (player_id === undefined) {
+        return;
+    }
     myWs.send(JSON.stringify({action: 'UPGRADE', id: player_id, speed: 1, power: 0, room_id: room_id}));
 });
 
 document.querySelector('#power').addEventListener('click', () => {
+    if (player_id === undefined) {
+        return;
+    }
     myWs.send(JSON.stringify({action: 'UPGRADE', id: player_id, speed: 0, power: 1, room_id: room_id}));
 });
 

@@ -16,11 +16,22 @@ myWs.onmessage = function (message) {
             generate_table(json.height, json.width);
             player_id = json.id;
             room_id = json.room_id;
+            document.querySelector(".main").classList.add("hidden");
+            document.querySelector(".join").classList.add("hidden");
+            document.querySelector(".waiting_window").classList.remove("hidden");
             document.querySelector("#waiting-text").textContent = `ID вашей комнаты: ${room_id}`;
             break;
         case 'CELL':
             const cell = document.getElementById(json.cell_id);
             cell.setAttribute('class', json.state);
+            break;
+        case 'WRONG_ROOM_ID':
+            document.querySelector(".join-text-box").classList.remove("hidden");
+            document.querySelector("#join-text").textContent = "Неверный id комнаты(";
+            break;
+        case 'FULL_ROOM':
+            document.querySelector(".join-text-box").classList.remove("hidden");
+            document.querySelector("#join-text").textContent = "Этак комната уже занята(";
             break;
         case 'START_GAME':
             document.querySelector(".modal_window").classList.add("hidden");
@@ -140,11 +151,6 @@ document.querySelector("#rules").addEventListener("click", () => {
     //TODO: добавить открытие окошка с правилами
 });
 
-// document.querySelector("#restart").addEventListener("click", () => {
-//     document.querySelector(".modal_window").classList.add("hidden");
-//     clearInterval(game_handler_event);
-//     start_game(player.name);
-// });
 
 document.querySelector("#join").addEventListener("click", () => {
     const nameInput = document.querySelector("#nickname");
@@ -156,6 +162,7 @@ document.querySelector("#join").addEventListener("click", () => {
         alert("Слишком длинное имя");
         return;
     }
+    document.querySelector(".join-text-box").classList.add("hidden");
     document.querySelector(".join").classList.remove("hidden");
 });
 
@@ -176,9 +183,6 @@ document.querySelector("#create").addEventListener("click", () => {
 
 document.querySelector("#button-join").addEventListener("click", () => {
     join_room(document.querySelector("#nickname").value, document.querySelector("#team-id").value);
-    document.querySelector(".main").classList.add("hidden");
-    document.querySelector(".join").classList.add("hidden");
-    document.querySelector(".waiting_window").classList.remove("hidden");
 });
 
 document.querySelector("#button-back").addEventListener("click", () => {

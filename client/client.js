@@ -135,6 +135,10 @@ document.querySelector("#button-join").addEventListener("click", () => {
     document.querySelector(".waiting_window").classList.remove("hidden");
 });
 
+document.querySelector("#button-back").addEventListener("click", () => {
+    document.querySelector(".join").classList.add("hidden");
+});
+
 document.querySelector("#play").addEventListener("click", () => {
     const nameInput = document.querySelector("#nickname");
     if (nameInput.value.length === 0) {

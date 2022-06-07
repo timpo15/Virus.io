@@ -207,6 +207,18 @@ td {
     font-size: 15pt;
 }
 
+.join-text-box{
+    background-color: #EEFDFF;
+    border-radius: 15px;
+    padding: 15px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+#join-text{
+    color: #778697;
+    font-size: 13pt;
+}
+
 .restart:hover,
 .restart:focus {
     color: black;

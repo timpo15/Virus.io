@@ -105,7 +105,7 @@ function update_map(cells, player, cell_styles, tower_styles) {
 
 function update_points(room, player_) {
     player_.points += player_.tower_num;
-    if (!player_.is_bot) {
+    if (player_.socket !== undefined) {
         send_points(player_);
     }
     if (player_.is_bot) { //TODO: БАБКА ЛЮТАЯ(исправить)
@@ -136,7 +136,7 @@ function handle_win(player) {
         return;
     }
     player.alive = false;
-    if (!player.is_bot) {
+    if (player.socket !== undefined) {
         player.socket.send(JSON.stringify({
             action: 'END_GAME',
             result: 'WIN'
@@ -162,7 +162,7 @@ export function handle_loss(cells, player) {
             }
         }
     }
-    if (!player.is_bot) {
+    if (player.socket !== undefined) {
         player.socket.send(JSON.stringify({
             action: 'END_GAME',
             result: 'LOSE'

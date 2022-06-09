@@ -7,5 +7,6 @@ export class Room {
         this.players = new Array(0);
         this.map = generate_table(field_height, field_width, this);
         this.interval = undefined;
+        this.observers_number = 0;
     }
 }

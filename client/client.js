@@ -95,6 +95,8 @@ function give_up() {
 
 function leave_room() {
     myWs.send(JSON.stringify({action: 'LEAVE', id: player_id}));
+    player_id = undefined;
+    room_id = undefined;
 }
 
 const cell_types = {

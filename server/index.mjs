@@ -6,7 +6,7 @@ import {broadcast, styles} from "./server.mjs";
 
 function send_player_names(room) {
     for (let i = 0; i < room.players.length; i++) {
-        if (!room.players[i].is_bot) {
+        if (room.players[i].socket !== undefined) {
             for (let j = 0; j < room.players.length; j++) {
                 room.players[i].socket.send(JSON.stringify({
                         action: 'SET_NAME',

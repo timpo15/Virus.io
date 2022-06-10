@@ -65,12 +65,14 @@ function onConnect(wsClient) {
                         wsClient.send(JSON.stringify({
                             action: 'WRONG_ROOM_ID'
                         }));
+                        return;
                     }
                     const room = rooms[jsonMessage.room_id];
                     if (room.players.length === 4) {
                         wsClient.send(JSON.stringify({
                             action: 'FULL_ROOM'
                         }));
+                        return;
                     }
                     const [p, p_tower] = styles[room.players.length];
                     const slave = new Player(p, p_tower, v4(), room.id, jsonMessage.name, 0, 0, direction.NONE, wsClient);

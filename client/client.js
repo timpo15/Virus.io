@@ -1,6 +1,7 @@
 const myWs = new WebSocket('ws://localhost:9000');
 let player_id = undefined;
 let room_id = undefined;
+let is_game_started = false;
 // обработчик проинформирует в консоль когда соединение установится
 myWs.onopen = function () {
     console.log('подключился');
@@ -38,6 +39,7 @@ myWs.onmessage = function (message) {
             document.querySelector(".main").classList.add("hidden");
             document.querySelector(".waiting_window").classList.add("hidden");
             document.querySelector(".game").classList.remove("hidden");
+            is_game_started = true;
             break;
         case 'SET_NAME':
             console.log(json.name);
@@ -63,6 +65,7 @@ myWs.onmessage = function (message) {
             }
             document.querySelector('#modal-text').textContent = text;
             document.querySelector(".modal_window").classList.remove("hidden");
+            is_game_started = false;
             break;
         default:
             console.log('huj');
@@ -83,6 +86,7 @@ function set_direction(direction) {
 
 function create_room(name) {
     myWs.send(JSON.stringify({action: 'CREATE_ROOM', name: name}));
+    document.querySelector('#play').classList.remove('hidden');
 }
 
 function join_room(name, room_id) {
@@ -203,6 +207,8 @@ document.querySelector("#give-up").addEventListener("click", () => {
 });
 
 window.addEventListener('keydown', function (e) {
+    if (!is_game_started)
+        return;
     if (e.key.toLowerCase() === "w" || e.key.toLowerCase() === 'ц')
         document.querySelector('#move-up').click();
     else if (e.key.toLowerCase() === "s" || e.key.toLowerCase() === 'ы')

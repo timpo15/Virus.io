@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="css/styles.css">
+    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+          name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <link href="css/styles.css" rel="stylesheet">
     <title>Virus.io</title>
 </head>
 <body>
@@ -15,49 +15,45 @@
         <div class="center-element">
             <div class="menu">
                 <h1 class="logo">Virus.io</h1>
-                <input type="text" name="nickname" id="nickname" placeholder="Enter name" class="menu_list">
-                <button id="create" class="menu_list">Create room</button>
-                <button id="join" class="menu_list">Join room</button>
-                <button id="rules" class="menu_list">Rules</button>
+                <input class="menu_list" id="nickname" name="nickname" placeholder="Enter name" type="text">
+                <button class="menu_list" id="create">Create room</button>
+                <button class="menu_list" id="join">Join room</button>
+                <button class="menu_list" id="rules">Rules</button>
             </div>
         </div>
     </div>
 </section>
 
 <section class="waiting_window hidden">
-    <div class="container">
-        <div class="waiting" id="waiting">
-            <div class="waiting-content" id="waiting-content">
-                <div class="waiting-text-box">
-                    <div id="waiting-text">
-                        У нас что-то сломалось, поэтому держите анекдот:
-                        <br>
-                        Идет наркоман по лесу и видит, что на земле подкова лежит.
-                        <br>
-                        Переворачивает ее, а там конь.
-                    </div>
+    <div class="modal" id="waiting">
+        <div class="waiting-content" id="waiting-content">
+            <div class="waiting-text-box">
+                <div id="waiting-text">
+                    У нас что-то сломалось, поэтому держите анекдот:
+                    <br>
+                    Идет наркоман по лесу и видит, что на земле подкова лежит.
+                    <br>
+                    Переворачивает ее, а там конь.
                 </div>
-                <div class="waiting-buttons">
-                    <button id="play">play</button>
-                </div>
+            </div>
+            <div class="modal-buttons">
+                <button id="play" class="hidden">play</button>
             </div>
         </div>
     </div>
 </section>
 
 <section class="join hidden">
-    <div class="container">
-        <div class="modal-join" id="modal-join">
-            <div class="modal-join-content" id="modal-join-content">
-                <input type="text" name="team-Id" id="team-id" placeholder="Enter team ID">
-                <div class="join-text-box hidden">
-                    <div id="join-text">
-                    </div>
+    <div class="modal" id="modal-join">
+        <div class="modal-join-content" id="modal-join-content">
+            <input id="team-id" name="team-Id" placeholder="Enter team ID" type="text">
+            <div class="join-text-box hidden">
+                <div id="join-text">
                 </div>
-                <div class="modal-buttons">
-                    <button id="button-join" class="modal-button">join</button>
-                    <button id="button-back" class="modal-button">back</button>
-                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-button" id="button-join">join</button>
+                <button class="modal-button" id="button-back">back</button>
             </div>
         </div>
     </div>
@@ -90,45 +86,45 @@
                     <tr>
                         <td></td>
                         <td>
-                            <button id="move-up" class="arrow"></button>
+                            <button class="arrow" id="move-up"></button>
                         </td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>
-                            <button id="move-left" class="arrow"></button>
+                            <button class="arrow" id="move-left"></button>
                         </td>
                         <td>
-                            <button id="move-none" class="arrow-active"></button>
+                            <button class="arrow-active" id="move-none"></button>
                         </td>
                         <td>
-                            <button id="move-right" class="arrow"></button>
+                            <button class="arrow" id="move-right"></button>
                         </td>
                     </tr>
                     <tr>
                         <td></td>
                         <td>
-                            <button id="move-down" class="arrow"></button>
+                            <button class="arrow" id="move-down"></button>
                         </td>
                         <td></td>
                     </tr>
                 </table>
                 <div class="statistics">
-                    <div id="player-score" class="stat-head">Points: <span>0</span></div>
+                    <div class="stat-head" id="player-score">Points: <span>0</span></div>
                     <div class="buttons-upgrade captured-table">
-                        <button id="speed" class="ui-button">Speed: <span>0</span></button>
-                        <button id="power" class="ui-button">Power: <span>0</span></button>
+                        <button class="ui-button" id="speed">Speed: <span>0</span></button>
+                        <button class="ui-button" id="power">Power: <span>0</span></button>
                     </div>
                 </div>
 
 
                 <div class="button-give-up">
-                    <button id="give-up" class="give-up ui-button">Give up</button>
+                    <button class="give-up ui-button" id="give-up">Give up</button>
                 </div>
             </div>
             <div class="game-window">
                 <table>
-                    <tbody id="game-field" border="1">
+                    <tbody border="1" id="game-field">
 
                     </tbody>
                 </table>
@@ -138,19 +134,17 @@
 </section>
 
 <section class="modal_window hidden">
-    <div class="container">
-        <div class="modal" id="modal">
-            <div class="modal-content" id="modal-content">
-                <div class="modal-text-box">
-                    <div id="modal-text">
+    <div class="modal" id="modal">
+        <div class="modal-content" id="modal-content">
+            <div class="modal-text-box">
+                <div id="modal-text">
 
-                    </div>
                 </div>
+            </div>
 
-                <div class="modal-buttons">
-                    <button id="close-modal" class="modal-button">close</button>
-                    <button id="menu" class="modal-button">menu</button>
-                </div>
+            <div class="modal-buttons">
+                <button class="modal-button" id="close-modal">close</button>
+                <button class="modal-button" id="menu">menu</button>
             </div>
         </div>
     </div>
@@ -158,6 +152,6 @@
 
 <script src="client/client.js"></script>
 <!--<script src="server/index.mjs" type="module"></script>-->
-<link rel="stylesheet" href="styles.css">
+<link href="styles.css" rel="stylesheet">
 </body>
 </html>

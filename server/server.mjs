@@ -24,10 +24,10 @@ export const styles = [[cell_types.P1, cell_types.P1_TOWER],
 
 const rooms = {}
 const players = {};
-const sockets = {};
 
 function onConnect(wsClient) {
     console.log('Новый пользователь');
+    let player = undefined;
     wsClient.on('message', function (message) {
         try {
             const jsonMessage = JSON.parse(message);
@@ -45,17 +45,16 @@ function onConnect(wsClient) {
                 case 'CREATE_ROOM': {
                     const room = new Room(v4());
                     const [p, p_tower] = styles[0];
-                    const host = new Player(p, p_tower, v4(), room.id, jsonMessage.name, 0, 0, direction.NONE, wsClient);
-                    sockets[wsClient] = host.id;
-                    room.players.push(host);
+                    player = new Player(p, p_tower, v4(), room.id, jsonMessage.name, 0, 0, direction.NONE, wsClient);
+                    room.players.push(player);
                     rooms[room.id] = room;
-                    players[host.id] = host;
+                    players[player.id] = player;
                     room.observers_number++;
                     wsClient.send(JSON.stringify({
                         action: 'CONSTANTS',
                         width: field_width,
                         height: field_height,
-                        id: host.id,
+                        id: player.id,
                         room_id: room.id
                     }));
                     break;
@@ -75,16 +74,15 @@ function onConnect(wsClient) {
                         return;
                     }
                     const [p, p_tower] = styles[room.players.length];
-                    const slave = new Player(p, p_tower, v4(), room.id, jsonMessage.name, 0, 0, direction.NONE, wsClient);
-                    sockets[wsClient] = slave.id;
-                    players[slave.id] = slave;
-                    room.players.push(slave);
+                    player = new Player(p, p_tower, v4(), room.id, jsonMessage.name, 0, 0, direction.NONE, wsClient);
+                    players[player.id] = player;
+                    room.players.push(player);
                     room.observers_number++;
                     wsClient.send(JSON.stringify({
                         action: 'CONSTANTS',
                         width: field_width,
                         height: field_height,
-                        id: slave.id,
+                        id: player.id,
                         room_id: room.id
                     }));
                     break;
@@ -127,6 +125,7 @@ function onConnect(wsClient) {
                     if (rooms[players[jsonMessage.id].room_id].observers_number === 0) {
                         delete_room(players[jsonMessage.id].room_id);
                     }
+                    player = undefined;
                     break;
                 default:
                     console.log('Неизвестная команда');
@@ -139,12 +138,11 @@ function onConnect(wsClient) {
     wsClient.on('close', function () {
         // отправка уведомления в консоль
         console.log('Пользователь отключился');
-        if (wsClient in sockets) {
-            rooms[players[sockets[wsClient]].room_id].observers_number--;
-            if (rooms[players[sockets[wsClient]].room_id].observers_number === 0) {
-                delete_room(players[sockets[wsClient]].room_id);
+        if (player !== undefined) {
+            rooms[player.room_id].observers_number--;
+            if (rooms[player.room_id].observers_number === 0) {
+                delete_room(player.room_id);
             }
-            delete sockets[wsClient];
         }
     });
 }
@@ -155,9 +153,6 @@ function delete_room(room_id) {
     console.log("DELETING ROOM");
     clearInterval(rooms[room_id].interval);
     for (const player of rooms[room_id].players) {
-        if (player.socket !== undefined) {
-            delete sockets[player.socket];
-        }
         delete players[player.id];
     }
     delete rooms[room_id];

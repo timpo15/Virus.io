@@ -167,13 +167,30 @@ td {
     margin-top: 15px;
 }
 .waiting-content {
-
-    background-color: #EEFDFF;
+    background-color: #B9F0F8;
     border-radius: 30px;
     margin: 15% auto;
     padding: 40px;
     border: 1px solid #888;
     width: 50%;
+}
+
+#id-your-team{
+    background-color: #EEFDFF;
+    border-radius: 30px;
+    padding: 15px;
+    border: 1px solid #888;
+    color: #778697;
+    font-size: 15pt;
+}
+.nicknames{
+    color: #778697;
+    font-size: 15pt;
+    margin-top: 25px;
+    background-color: #EEFDFF;
+    border-radius: 30px;
+    padding: 20px;
+    border: 1px solid #888;
 }
 
 #play{

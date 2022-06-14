@@ -15,10 +15,10 @@
         <div class="center-element">
             <div class="menu">
                 <h1 class="logo">Virus.io</h1>
-                <input class="menu_list" id="nickname" name="nickname" placeholder="Enter name" type="text">
-                <button class="menu_list" id="create">Create room</button>
-                <button class="menu_list" id="join">Join room</button>
-                <button class="menu_list" id="rules">Rules</button>
+                <input class="menu_list" id="nickname" name="nickname" placeholder="Введите имя" type="text">
+                <button class="menu_list" id="create">Создать комнату</button>
+                <button class="menu_list" id="join">Присоединиться к комнате</button>
+                <button class="menu_list" id="rules">Правила</button>
             </div>
         </div>
     </div>
@@ -27,17 +27,19 @@
 <section class="waiting_window hidden">
     <div class="modal" id="waiting">
         <div class="waiting-content" id="waiting-content">
-            <div class="waiting-text-box">
-                <div id="waiting-text">
-                    У нас что-то сломалось, поэтому держите анекдот:
-                    <br>
-                    Идет наркоман по лесу и видит, что на земле подкова лежит.
-                    <br>
-                    Переворачивает ее, а там конь.
-                </div>
+            <div id="id-your-team">
+
             </div>
+
+            <div class="nicknames">
+                Присоединились:
+                <div id="nickname1">huj1</div>
+                <div id="nickname2">huj2</div>
+                <div id="nickname3">huj3</div>
+            </div>
+
             <div class="modal-buttons">
-                <button id="play" class="hidden">play</button>
+                <button id="play" class="hidden">играть</button>
             </div>
         </div>
     </div>
@@ -46,14 +48,14 @@
 <section class="join hidden">
     <div class="modal" id="modal-join">
         <div class="modal-join-content" id="modal-join-content">
-            <input id="team-id" name="team-Id" placeholder="Enter team ID" type="text">
+            <input id="team-id" name="team-Id" placeholder="Введите ID команды" type="text">
             <div class="join-text-box hidden">
                 <div id="join-text">
                 </div>
             </div>
             <div class="modal-buttons">
-                <button class="modal-button" id="button-join">join</button>
-                <button class="modal-button" id="button-back">back</button>
+                <button class="modal-button" id="button-join">присоединиться</button>
+                <button class="modal-button" id="button-back">назад</button>
             </div>
         </div>
     </div>
@@ -65,7 +67,7 @@
             <div class="game-controls">
 
                 <div class="statistics">
-                    <div class="stat-head">Captured</div>
+                    <div class="stat-head">Захвачено</div>
                     <div class="captured-table">
                         <div class="player1_captured captured_score">
                             <span class="nick">Player</span>: <span class="score">1</span>
@@ -110,16 +112,16 @@
                     </tr>
                 </table>
                 <div class="statistics">
-                    <div class="stat-head" id="player-score">Points: <span>0</span></div>
+                    <div class="stat-head" id="player-score">Очки: <span>0</span></div>
                     <div class="buttons-upgrade captured-table">
-                        <button class="ui-button" id="speed">Speed: <span>0</span></button>
-                        <button class="ui-button" id="power">Power: <span>0</span></button>
+                        <button class="ui-button" id="speed">Скорость: <span>0</span></button>
+                        <button class="ui-button" id="power">Сила: <span>0</span></button>
                     </div>
                 </div>
 
 
                 <div class="button-give-up">
-                    <button class="give-up ui-button" id="give-up">Give up</button>
+                    <button class="give-up ui-button" id="give-up">Сдасться</button>
                 </div>
             </div>
             <div class="game-window">
@@ -143,8 +145,8 @@
             </div>
 
             <div class="modal-buttons">
-                <button class="modal-button" id="close-modal">close</button>
-                <button class="modal-button" id="menu">menu</button>
+                <button class="modal-button" id="close-modal">закрыть</button>
+                <button class="modal-button" id="menu">меню</button>
             </div>
         </div>
     </div>

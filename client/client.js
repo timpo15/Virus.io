@@ -20,7 +20,7 @@ myWs.onmessage = function (message) {
             document.querySelector(".main").classList.add("hidden");
             document.querySelector(".join").classList.add("hidden");
             document.querySelector(".waiting_window").classList.remove("hidden");
-            document.querySelector("#waiting-text").textContent = `ID вашей комнаты: ${room_id}`;
+            document.querySelector("#id-your-team").textContent = `ID вашей комнаты: ${room_id}`;
             break;
         case 'CELL':
             const cell = document.getElementById(json.cell_id);

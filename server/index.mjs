@@ -10,12 +10,34 @@ function send_player_names(room) {
             for (let j = 0; j < room.players.length; j++) {
                 room.players[i].socket.send(JSON.stringify({
                         action: 'SET_NAME',
-                        name: room.players[j].name + (i === j ? " (you)": ""),
+                        name: room.players[j].name + (i === j ? " (Вы)": ""),
                         i: j
                 }))
             }
         }
     }
+}
+
+export function send_new_player_name(room) {
+    for (let i = 0; i < room.players.length - 1; i++) {
+        if (room.players[i].socket !== undefined) {
+            room.players[i].socket.send(JSON.stringify({
+                action: 'NEW_PLAYER',
+                name: room.players[room.players.length - 1].name,
+                i: room.players.length - 1
+            }));
+            room.players[room.players.length - 1].socket.send(JSON.stringify({
+                action: 'NEW_PLAYER',
+                name: room.players[i].name,
+                i: i
+            }));
+        }
+    }
+    room.players[room.players.length - 1].socket.send(JSON.stringify({
+        action: 'NEW_PLAYER',
+        name: room.players[room.players.length - 1].name + " (Вы)",
+        i: room.players.length - 1
+    }))
 }
 
 export function send_captured(room, captured) {

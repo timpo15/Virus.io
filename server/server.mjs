@@ -1,6 +1,6 @@
 import WebSocket, {WebSocketServer} from 'ws';
 import {v4} from "uuid";
-import {start_game} from "./index.mjs";
+import {send_new_player_name, start_game} from "./index.mjs";
 import {field_height, field_width, handle_loss} from "./game_handler.js";
 import {Room} from "./room.js";
 import {direction, Player} from "./player.js";
@@ -50,6 +50,7 @@ function onConnect(wsClient) {
                     rooms[room.id] = room;
                     players[player.id] = player;
                     room.observers_number++;
+                    send_new_player_name(room);
                     wsClient.send(JSON.stringify({
                         action: 'CONSTANTS',
                         width: field_width,
@@ -78,6 +79,7 @@ function onConnect(wsClient) {
                     players[player.id] = player;
                     room.players.push(player);
                     room.observers_number++;
+                    send_new_player_name(room);
                     wsClient.send(JSON.stringify({
                         action: 'CONSTANTS',
                         width: field_width,

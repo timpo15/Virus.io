@@ -42,8 +42,10 @@ myWs.onmessage = function (message) {
             is_game_started = true;
             break;
         case 'SET_NAME':
-            console.log(json.name);
             document.querySelector(`.player${json.i + 1}_captured > .nick`).textContent = json.name;
+            break;
+        case 'NEW_PLAYER':
+            document.querySelector(`#nickname${json.i + 1}`).textContent = json.name;
             break;
         case 'UPDATE_CAPTURED':
             document.querySelector(`.player${json.i + 1}_captured > .score`).textContent = json.value;
@@ -73,6 +75,12 @@ myWs.onmessage = function (message) {
     }
 };
 
+function clear_players_names() {
+    for (let i = 1; i <= 4; i++) {
+        document.querySelector(`#nickname${i}`).textContent = "";
+    }
+}
+
 function start_game(name) {
     myWs.send(JSON.stringify({action: 'START_GAME', id: player_id, room_id: room_id}));
 }
@@ -101,6 +109,7 @@ function leave_room() {
     myWs.send(JSON.stringify({action: 'LEAVE', id: player_id}));
     player_id = undefined;
     room_id = undefined;
+    clear_players_names();
 }
 
 const cell_types = {

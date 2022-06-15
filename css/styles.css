@@ -160,6 +160,13 @@ td {
     border-radius: 20px;
 }
 
+.goto-menu.goto-menu {
+    background: #EEFDFF;
+    width: 210px;
+    height: 50px;
+    border-radius: 20px;
+}
+
 .ui-button:hover {
     background: #c1f7ff;
     /*background: linear-gradient(to bottom, #6AAEFF 50%, #FEFFB5 50%);*/

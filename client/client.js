@@ -35,6 +35,8 @@ myWs.onmessage = function (message) {
             document.querySelector("#join-text").textContent = "Этак комната уже занята(";
             break;
         case 'START_GAME':
+            document.querySelector('.goto-menu').classList.add("hidden");
+            document.querySelector('.give-up').classList.remove("hidden");
             document.querySelector(".modal_window").classList.add("hidden");
             document.querySelector(".main").classList.add("hidden");
             document.querySelector(".waiting_window").classList.add("hidden");
@@ -67,6 +69,8 @@ myWs.onmessage = function (message) {
             }
             document.querySelector('#modal-text').textContent = text;
             document.querySelector(".modal_window").classList.remove("hidden");
+            document.querySelector('.goto-menu').classList.remove("hidden");
+            document.querySelector('.give-up').classList.add("hidden");
             is_game_started = false;
             break;
         default:
@@ -278,6 +282,14 @@ document.querySelector('#close-modal').addEventListener('click', () => {
 });
 
 document.querySelector("#menu").addEventListener("click", () => {
+    document.querySelector(".modal_window").classList.add("hidden");
+    document.querySelector(".game").classList.add("hidden");
+    document.querySelector(".waiting_window").classList.add("hidden");
+    document.querySelector(".main").classList.remove("hidden");
+    leave_room();
+});
+
+document.querySelector("#goto-menu").addEventListener("click", () => {
     document.querySelector(".modal_window").classList.add("hidden");
     document.querySelector(".game").classList.add("hidden");
     document.querySelector(".waiting_window").classList.add("hidden");

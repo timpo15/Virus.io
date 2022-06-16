@@ -171,6 +171,14 @@ function selectButton(name) {
 
 document.querySelector("#rules").addEventListener("click", () => {
     //TODO: добавить открытие окошка с правилами
+    document.querySelector(".main").classList.add("hidden");
+
+    document.querySelector(".rules_window").classList.remove("hidden");
+});
+
+document.querySelector("#close").addEventListener("click", () => {
+    document.querySelector(".rules_window").classList.add("hidden");
+    document.querySelector(".main").classList.remove("hidden");
 });
 
 

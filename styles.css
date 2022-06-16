@@ -276,7 +276,21 @@ button, input {
     font-weight: normal;
 
 }
-.rules-buttons{
+.rules-buttons {
     width: 100%;
     margin-top: 15px;
+}
+
+.name_error_window {
+    position: fixed;
+    left: 50%;
+    top: 2%;
+    margin-left: -250px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    background-color: #EEFDFF;
+    border-radius: 20px;
+    padding: 40px;
+    width: 500px;
 }

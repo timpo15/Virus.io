@@ -19,6 +19,7 @@ myWs.onmessage = function (message) {
             room_id = json.room_id;
             document.querySelector(".main").classList.add("hidden");
             document.querySelector(".join").classList.add("hidden");
+            document.querySelector(".name_error_window").classList.add("hidden");
             document.querySelector(".waiting_window").classList.remove("hidden");
             document.querySelector("#id-your-team").textContent = `ID вашей комнаты: ${room_id}`;
             break;
@@ -38,6 +39,8 @@ myWs.onmessage = function (message) {
             document.querySelector('.goto-menu').classList.add("hidden");
             document.querySelector('.give-up').classList.remove("hidden");
             document.querySelector(".modal_window").classList.add("hidden");
+            document.querySelector(".name_error_window").classList.add("hidden");
+            document.querySelector(".join").classList.add("hidden");
             document.querySelector(".main").classList.add("hidden");
             document.querySelector(".waiting_window").classList.add("hidden");
             document.querySelector(".game").classList.remove("hidden");
@@ -181,15 +184,25 @@ document.querySelector("#close").addEventListener("click", () => {
     document.querySelector(".main").classList.remove("hidden");
 });
 
+function is_name_correct(name) {
+    if (name.length === 0) {
+        document.querySelector(".name_error_window").classList.remove("hidden");
+        document.querySelector(".name_error_window").textContent = "Пожалуйста, введите имя";
+        setTimeout(() => document.querySelector(".name_error_window").classList.add("hidden"), 4000);
+        return false;
+    }
+    if (name.length > 15) {
+        document.querySelector(".name_error_window").classList.remove("hidden");
+        document.querySelector(".name_error_window").textContent = "Имя слишком длинное";
+        setTimeout(() => document.querySelector(".name_error_window").classList.add("hidden"), 4000);
+        return false;
+    }
+    return true;
+}
 
 document.querySelector("#join").addEventListener("click", () => {
     const nameInput = document.querySelector("#nickname");
-    if (nameInput.value.length === 0) {
-        alert("Введите имя");
-        return;
-    }
-    if (nameInput.value.length > 15) {
-        alert("Слишком длинное имя");
+    if (!is_name_correct(nameInput.value)) {
         return;
     }
     document.querySelector(".join-text-box").classList.add("hidden");
@@ -198,12 +211,7 @@ document.querySelector("#join").addEventListener("click", () => {
 
 document.querySelector("#create").addEventListener("click", () => {
     const nameInput = document.querySelector("#nickname");
-    if (nameInput.value.length === 0) {
-        alert("Введите имя");
-        return;
-    }
-    if (nameInput.value.length > 15) {
-        alert("Слишком длинное имя");
+    if (!is_name_correct(nameInput.value)) {
         return;
     }
     create_room(nameInput.value);

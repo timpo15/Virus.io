@@ -81,7 +81,7 @@ myWs.onmessage = function (message) {
 
 function clear_players_names() {
     for (let i = 1; i <= 4; i++) {
-        document.querySelector(`#nickname${i}`).textContent = "";
+        document.querySelector(`#nickname${i}`).textContent = "Пока это место свободно";
     }
 }
 

@@ -66,8 +66,7 @@ myWs.onmessage = function (message) {
             let text;
             if (json.result === 'WIN') {
                 text = 'Вы выиграли';
-            }
-            else if (json.result === 'LOSE') {
+            } else if (json.result === 'LOSE') {
                 text = 'Вы проиграли';
             }
             document.querySelector('#modal-text').textContent = text;
@@ -88,7 +87,7 @@ function clear_players_names() {
     }
 }
 
-function start_game(name) {
+function start_game() {
     myWs.send(JSON.stringify({action: 'START_GAME', id: player_id, room_id: room_id}));
 }
 
@@ -172,18 +171,6 @@ function selectButton(name) {
     buttons[name].classList.add('arrow-active');
 }
 
-document.querySelector("#rules").addEventListener("click", () => {
-    //TODO: добавить открытие окошка с правилами
-    document.querySelector(".main").classList.add("hidden");
-
-    document.querySelector(".rules_window").classList.remove("hidden");
-});
-
-document.querySelector("#close").addEventListener("click", () => {
-    document.querySelector(".rules_window").classList.add("hidden");
-    document.querySelector(".main").classList.remove("hidden");
-});
-
 function is_name_correct(name) {
     if (name.length === 0) {
         document.querySelector(".name_error_window").classList.remove("hidden");
@@ -199,6 +186,17 @@ function is_name_correct(name) {
     }
     return true;
 }
+
+document.querySelector("#rules").addEventListener("click", () => {
+    //TODO: добавить открытие окошка с правилами
+    document.querySelector(".main").classList.add("hidden");
+    document.querySelector(".rules_window").classList.remove("hidden");
+});
+
+document.querySelector("#close").addEventListener("click", () => {
+    document.querySelector(".rules_window").classList.add("hidden");
+    document.querySelector(".main").classList.remove("hidden");
+});
 
 document.querySelector("#join").addEventListener("click", () => {
     const nameInput = document.querySelector("#nickname");
@@ -228,7 +226,7 @@ document.querySelector("#button-back").addEventListener("click", () => {
 });
 
 document.querySelector("#play").addEventListener("click", () => {
-    start_game(document.querySelector("#nickname").value);
+    start_game();
 });
 
 document.querySelector("#give-up").addEventListener("click", () => {
@@ -297,18 +295,18 @@ document.querySelector('#close-modal').addEventListener('click', () => {
     document.querySelector(".modal_window").classList.add("hidden");
 });
 
-document.querySelector("#menu").addEventListener("click", () => {
+function end_game() {
     document.querySelector(".modal_window").classList.add("hidden");
     document.querySelector(".game").classList.add("hidden");
     document.querySelector(".waiting_window").classList.add("hidden");
     document.querySelector(".main").classList.remove("hidden");
     leave_room();
+}
+
+document.querySelector("#menu").addEventListener("click", () => {
+    end_game();
 });
 
 document.querySelector("#goto-menu").addEventListener("click", () => {
-    document.querySelector(".modal_window").classList.add("hidden");
-    document.querySelector(".game").classList.add("hidden");
-    document.querySelector(".waiting_window").classList.add("hidden");
-    document.querySelector(".main").classList.remove("hidden");
-    leave_room();
+    end_game();
 });

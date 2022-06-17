@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
-          name="viewport">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="ie=edge" http-equiv="X-UA-Compatible">
     <link href="css/styles.css" rel="stylesheet">
     <title>Virus.io</title>
 </head>
 <body>
 
-<section class="main">
+<div class="main">
     <div class="name_error_window hidden">
     </div>
     <div class="container">
@@ -24,26 +23,26 @@
             </div>
         </div>
     </div>
-</section>
+</div>
 
-<section class="rules_window hidden">
+<div class="rules_window hidden">
     <div class="container">
         <div class="rule" id="rule">
             <div class="rule-content" id="rule-content">
                 <div class="rule-text-box">
                     <div id="rule-text">
                         Управляйте направлением распространения вируса с помощью
-                        <img src="панель.png"  height="100" alt="панель" align="middle">
+                        <img src="img/панель.png" height="100" alt="панель">
                         или
-                        <img src="wasd.png"  height="100" alt="wasd" align="middle">
+                        <img src="img/wasd.png" height="100" alt="wasd">
                         <br>
                         Захватывайте эпицентры
-                        <img src="эпицентр.png"  height="100" alt="эпицентр" align="middle">
+                        <img src="img/эпицентр.png" height="100" alt="эпицентр">
                         Чем больше эпицентров захвачено, тем больше очков вы будете получать
                         <br>
                         Увеличивайте за счет очков силу и скорость, для лучшей борьбы с другими вирусами
-                        <img src="Прокачка.png"  height="100" alt="прокачка" align="middle">
-                        или <img src="eq.png"  height="100" alt="прокачка" align="middle">
+                        <img src="img/Прокачка.png" height="100" alt="прокачка">
+                        или <img src="img/eq.png" height="100" alt="прокачка">
                         <br>
                         Игра закончится, когда один игрок захватит все эпицентры.
                         Вы проиграете, если у вас не останется эпицентров.
@@ -57,9 +56,9 @@
             </div>
         </div>
     </div>
-</section>
+</div>
 
-<section class="waiting_window hidden">
+<div class="waiting_window hidden">
     <div class="modal" id="waiting">
         <div class="waiting-content" id="waiting-content">
             <div id="id-your-team">
@@ -79,9 +78,9 @@
             </div>
         </div>
     </div>
-</section>
+</div>
 
-<section class="join hidden">
+<div class="join hidden">
     <div class="modal" id="modal-join">
         <div class="modal-join-content" id="modal-join-content">
             <input id="team-id" name="team-Id" placeholder="Введите ID комнаты" type="text">
@@ -95,26 +94,9 @@
             </div>
         </div>
     </div>
-</section>
+</div>
 
-<section class="rules_window hidden">
-    <div class="container">
-        <div class="rule" id="rule">
-            <div class="rule-content" id="rule-content">
-                <div class="rule-text-box">
-                    <div id="rule-text">
-
-                    </div>
-                </div>
-                <div class="rules-buttons">
-                    <button id="close" class="rules-button">close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="game hidden">
+<div class="game hidden">
     <div class="container">
         <div class="game-flex">
             <div class="game-controls">
@@ -180,16 +162,16 @@
             </div>
             <div class="game-window">
                 <table>
-                    <tbody border="1" id="game-field">
+                    <tbody id="game-field">
 
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-</section>
+</div>
 
-<section class="modal_window hidden">
+<div class="modal_window hidden">
     <div class="modal" id="modal">
         <div class="modal-content" id="modal-content">
             <div class="modal-text-box">
@@ -204,10 +186,8 @@
             </div>
         </div>
     </div>
-</section>
+</div>
 
 <script src="client/client.js"></script>
-<!--<script src="server/index.mjs" type="module"></script>-->
-<link href="styles.css" rel="stylesheet">
 </body>
 </html>

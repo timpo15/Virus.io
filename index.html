@@ -2,22 +2,96 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="css/styles.css">
+    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+          name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <link href="css/styles.css" rel="stylesheet">
     <title>Virus.io</title>
 </head>
 <body>
 
 <section class="main">
+    <div class="name_error_window hidden">
+    </div>
     <div class="container">
         <div class="center-element">
             <div class="menu">
                 <h1 class="logo">Virus.io</h1>
-                <input type="text" name="nickname" id="nickname" placeholder="Enter name" class="menu_list">
-                <button id="play" class="menu_list">Play</button>
-                <button id="rules" class="menu_list">Rules</button>
+                <input class="menu_list" id="nickname" name="nickname" placeholder="Введите имя" type="text">
+                <button class="menu_list" id="create">Создать комнату</button>
+                <button class="menu_list" id="join">Присоединиться к комнате</button>
+                <button class="menu_list" id="rules">Правила</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="rules_window hidden">
+    <div class="container">
+        <div class="rule" id="rule">
+            <div class="rule-content" id="rule-content">
+                <div class="rule-text-box">
+                    <div id="rule-text">
+                        Управляйте направлением распространения вируса с помощью
+                        <img src="панель.png"  height="100" alt="панель" align="middle">
+                        или
+                        <img src="wasd.png"  height="100" alt="wasd" align="middle">
+                        <br>
+                        Захватывайте эпицентры
+                        <img src="эпицентр.png"  height="100" alt="эпицентр" align="middle">
+                        Чем больше эпицентров захвачено, тем больше очков вы будете получать
+                        <br>
+                        Увеличивайте за счет очков силу и скорость, для лучшей борьбы с другими вирусами
+                        <img src="Прокачка.png"  height="100" alt="прокачка" align="middle">
+                        или <img src="eq.png"  height="100" alt="прокачка" align="middle">
+                        <br>
+                        Игра закончится, когда один игрок захватит все эпицентры.
+                        Вы проиграете, если у вас не останется эпицентров.
+
+
+                    </div>
+                </div>
+                <div class="rules-buttons">
+                    <button id="close" class="rules-button">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="waiting_window hidden">
+    <div class="modal" id="waiting">
+        <div class="waiting-content" id="waiting-content">
+            <div id="id-your-team">
+                У нас что-то сломалось, игры не будет, поэтому держите анекдот: колобок повесился.
+            </div>
+
+            <div class="nicknames">
+                Присоединились:
+                <div id="nickname1">Пока это место свободно</div>
+                <div id="nickname2">Пока это место свободно</div>
+                <div id="nickname3">Пока это место свободно</div>
+                <div id="nickname4">Пока это место свободно</div>
+            </div>
+
+            <div class="modal-buttons">
+                <button id="play" class="hidden">Играть</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="join hidden">
+    <div class="modal" id="modal-join">
+        <div class="modal-join-content" id="modal-join-content">
+            <input id="team-id" name="team-Id" placeholder="Введите ID комнаты" type="text">
+            <div class="join-text-box hidden">
+                <div id="join-text">
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-button" id="button-join">Присоединиться</button>
+                <button class="modal-button" id="button-back">Назад</button>
             </div>
         </div>
     </div>
@@ -46,7 +120,7 @@
             <div class="game-controls">
 
                 <div class="statistics">
-                    <div class="stat-head">Captured</div>
+                    <div class="stat-head">Захвачено</div>
                     <div class="captured-table">
                         <div class="player1_captured captured_score">
                             <span class="nick">Player</span>: <span class="score">1</span>
@@ -67,45 +141,46 @@
                     <tr>
                         <td></td>
                         <td>
-                            <button id="move-up" class="arrow"></button>
+                            <button class="arrow" id="move-up"></button>
                         </td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>
-                            <button id="move-left" class="arrow"></button>
+                            <button class="arrow" id="move-left"></button>
                         </td>
                         <td>
-                            <button id="move-none" class="arrow-active"></button>
+                            <button class="arrow-active" id="move-none"></button>
                         </td>
                         <td>
-                            <button id="move-right" class="arrow"></button>
+                            <button class="arrow" id="move-right"></button>
                         </td>
                     </tr>
                     <tr>
                         <td></td>
                         <td>
-                            <button id="move-down" class="arrow"></button>
+                            <button class="arrow" id="move-down"></button>
                         </td>
                         <td></td>
                     </tr>
                 </table>
                 <div class="statistics">
-                    <div id="player-score" class="stat-head">Points: <span>0</span></div>
+                    <div class="stat-head" id="player-score">Очки: <span>0</span></div>
                     <div class="buttons-upgrade captured-table">
-                        <button id="speed" class="ui-button">Speed: <span>0</span></button>
-                        <button id="power" class="ui-button">Power: <span>0</span></button>
+                        <button class="ui-button" id="speed">Скорость: <span>0</span></button>
+                        <button class="ui-button" id="power">Сила: <span>0</span></button>
                     </div>
                 </div>
 
 
                 <div class="button-give-up">
-                    <button id="give-up" class="give-up ui-button">Give up</button>
+                    <button class="give-up ui-button" id="give-up">Сдаться</button>
+                    <button class="goto-menu ui-button hidden" id="goto-menu">Выйти в меню</button>
                 </div>
             </div>
             <div class="game-window">
                 <table>
-                    <tbody id="game-field" border="1">
+                    <tbody border="1" id="game-field">
 
                     </tbody>
                 </table>
@@ -115,25 +190,24 @@
 </section>
 
 <section class="modal_window hidden">
-    <div class="container">
-        <div class="modal" id="modal">
-            <div class="modal-content" id="modal-content">
-                <div class="modal-text-box">
-                    <div id="modal-text">
+    <div class="modal" id="modal">
+        <div class="modal-content" id="modal-content">
+            <div class="modal-text-box">
+                <div id="modal-text">
 
-                    </div>
                 </div>
+            </div>
 
-                <div class="modal-buttons">
-                    <button id="restart" class="modal-button">restart</button>
-                    <button id="menu" class="modal-button">menu</button>
-                </div>
+            <div class="modal-buttons">
+                <button class="modal-button" id="close-modal">Остаться</button>
+                <button class="modal-button" id="menu">Выйти в меню</button>
             </div>
         </div>
     </div>
 </section>
 
-<script src="index.js" type="module"></script>
-<link rel="stylesheet" href="styles.css">
+<script src="client/client.js"></script>
+<!--<script src="server/index.mjs" type="module"></script>-->
+<link href="styles.css" rel="stylesheet">
 </body>
 </html>

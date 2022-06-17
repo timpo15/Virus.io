@@ -1,7 +1,7 @@
 import {cell_types} from "./cell.js";
 import {direction} from "./player.js";
 import {get_random_int_from_range, kukarek} from "./utilities.js";
-import {player, print_captured, handle_player_win, handle_player_loss, print_points} from "./index.js";
+import {send_captured, send_points} from "./index.mjs";
 
 export const field_height = 30;
 export const field_width = 30;
@@ -103,9 +103,12 @@ function update_map(cells, player, cell_styles, tower_styles) {
     }
 }
 
-function update_points(player_) {
+function update_points(room, player_) {
     player_.points += player_.tower_num;
-    if (player_ !== player) { //TODO: БАБКА ЛЮТАЯ(исправить)
+    if (player_.socket !== undefined) {
+        send_points(player_);
+    }
+    if (player_.is_bot) { //TODO: БАБКА ЛЮТАЯ(исправить)
         let points_to_speed = Math.min(max_player_speed - player_.speed, get_random_int_from_range(0, player_.points));
         player_.strength += player_.points - points_to_speed;
         player_.speed += points_to_speed;
@@ -113,66 +116,79 @@ function update_points(player_) {
     }
 }
 
-function process_loss(cells, players) {
+function check_win_and_lose(cells, players) {
     let alive = [];
     for (let k = 0; k < players.length; k++) {
         if (players[k].tower_num === 0) {
-            for (let i = 0; i < cells.length; i++) {
-                for (let j = 0; j < cells[i].length; j++) {
-                    if (cells[i][j].state === players[k].tower_style) {
-                        cells[i][j].state = cell_types.FREE_TOWER;
-                        cells[i][j].player = undefined;
-                    }
-                    else if (cells[i][j].state === players[k].cell_style) {
-                        cells[i][j].state = cell_types.FREE;
-                        cells[i][j].player = undefined;
-                    }
-                }
-            }
-            handle_loss(players, k);
+            handle_loss(cells, players[k]);
         }
         else {
             alive.push(k);
         }
     }
     if (alive.length === 1) {
-        handle_win(players, alive[0]);
+        handle_win(players[alive[0]]);
     }
 }
 
-function handle_win(players, id) {
-    if (id === 0) {
-        handle_player_win();
+function handle_win(player) {
+    if (!player.alive) {
+        return;
     }
-    //TODO: Саня ты в порядке
+    player.alive = false;
+    if (player.socket !== undefined) {
+        player.socket.send(JSON.stringify({
+            action: 'END_GAME',
+            result: 'WIN'
+        }));
+    }
 }
 
-function handle_loss(players, id) {
-    if (id === 0) {
-        handle_player_loss();
+export function handle_loss(cells, player) {
+    if (!player.alive) {
+        return;
+    }
+    player.alive = false;
+    player.tower_num = 0;
+    for (let i = 0; i < cells.length; i++) {
+        for (let j = 0; j < cells[i].length; j++) {
+            if (cells[i][j].state === player.tower_style) {
+                cells[i][j].state = cell_types.FREE_TOWER;
+                cells[i][j].player = undefined;
+            }
+            else if (cells[i][j].state === player.cell_style) {
+                cells[i][j].state = cell_types.FREE;
+                cells[i][j].player = undefined;
+            }
+        }
+    }
+    if (player.socket !== undefined) {
+        player.socket.send(JSON.stringify({
+            action: 'END_GAME',
+            result: 'LOSE'
+        }));
     }
 }
 
-export function game_handler(cells, tick, players, cell_styles, tower_styles) {
-    print_points(player.points);
+export function game_handler(room, tick, cell_styles, tower_styles) {
     let captured = [];
-    for (let k = 0; k < players.length; k++) {
-        if (tick % (random_tick_speed + max_player_speed - players[k].speed) === 0) {
+    for (let k = 0; k < room.players.length; k++) {
+        if (tick % (random_tick_speed + max_player_speed - room.players[k].speed) === 0) {
             // console.log(players[k].name + " " + players[k].speed + " " + players[k].strength);
-            update_map(cells, players[k], cell_styles, tower_styles);
-            process_loss(cells, players);
+            update_map(room.map, room.players[k], cell_styles, tower_styles);
+            check_win_and_lose(room.map, room.players);
         }
         if (tick % point_tick_speed === 0) {
-            update_points(players[k]);
+            update_points(room, room.players[k]);
         }
         captured.push(0);
-        for (let i = 0; i < cells.length; i++) {
-            for (let j = 0; j < cells[i].length; j++) {
-                if (cells[i][j].player === players[k]) {
+        for (let i = 0; i < room.map.length; i++) {
+            for (let j = 0; j < room.map[i].length; j++) {
+                if (room.map[i][j].player === room.players[k]) {
                     captured[k]++;
                 }
             }
         }
     }
-    print_captured(captured);
+    send_captured(room, captured);
 }
